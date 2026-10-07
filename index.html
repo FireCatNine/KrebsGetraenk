@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Krebsgetränk</title>
+<style>
+  :root{
+    --background:#f6f4f0;
+    --foreground:#1d1d1b;
+    --muted:#77736b;
+    --card:#fff;
+    --line:#e1ddd5;
+    --accent:#2f6f5e
+  }
+  @media(prefers-color-scheme: dark){:root{--background:#161615;--foreground:#eeece6;--muted:#9a968c;--card:#1f1f1d;--line:#32312e;--accent:#6fb7a2}}
+
+  *{
+    box-sizing:border-box
+  }
+  body{
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main{
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px 16px 48px;
+  }
+  h1{
+    font-size: 1.3rem;
+    margin: 0 0 16px
+  }
+  h2{
+    
+  }
+
+</style>
+</head>
+<body>
+<main>
+  <h1>La Krebs</h1>
+  <section id="hero"><div class="empty">Lade …</div></section>
+  <h2>Archiv</h2>
+  <div id="grid"></div>
+</main>
+</body>
+</html>
+
