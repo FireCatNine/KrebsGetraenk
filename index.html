@@ -2,73 +2,11 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="preload" href="assets/script.js" as="script">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Krebsgetränk</title>
-<style>
-  :root{
-    --background:#f6f4f0;
-    --foreground:#1d1d1b;
-    --muted:#77736b;
-    --card:#fff;
-    --line:#e1ddd5;
-    --accent:#2f6f5e
-  }
-  @media(prefers-color-scheme: dark){:root{--background:#161615;--foreground:#eeece6;--muted:#9a968c;--card:#1f1f1d;--line:#32312e;--accent:#6fb7a2}}
-
-  *{
-    box-sizing:border-box
-  }
-  body{
-    margin: 0;
-    background: var(--background);
-    color: var(--foreground);
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  }
-  main{
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 20px 16px 48px;
-  }
-  h1{
-    font-size: 1.3rem;
-    margin: 0 0 16px
-  }
-  h2{
-    font-size: 1rem;
-    margin: 32px 0 12px;
-    color: var(--muted);
-    font-weight: 600;
-  }
-
-  #hero{
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    overflow: hidden;
-  }
-  #hero img{
-    display: block;
-    width: 100%;
-    max-height: 75vh;
-    object-fit: contain;
-    background: #000;
-  }
-  .cap{
-    padding: 12px 16px;
-    display: flex;
-    justify-content :space-between;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-  .empty{
-    padding: 48px 16px;
-    text-align: center;
-    color: var(--muted);
-  }
-</style>
-<script>
-
-</script>
+<script src="script.js" defer></script>
 </head>
 <body>
 <main>
