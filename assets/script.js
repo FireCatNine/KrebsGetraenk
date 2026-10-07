@@ -40,7 +40,7 @@ async function start(){
 
   grid.innerHTML= "";
   for (const img of images.slice(1)) grid.appendChild(img);
-  grid.hidden = title.hidden = images.length === 1;
+  grid.hidden= title.hidden= images.length=== 1;
 }
 
 start();
