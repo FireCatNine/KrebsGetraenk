@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/style.css">
     <link rel="preload" href="assets/script.js" as="script">
-    <title>Krebsgetränk-Upload</title>
+    <link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon">
+    <title>Krebsgetränke-Upload</title>
     <script src="assets/script.js" defer></script>
   </head>
   <body>
     <h2>Image-Upload</h2>
-    <input type="password" id="token" placeholder="Token">
+    <input type="password" id="token" placeholder="Token" hidden>
     <input type="file" id="photoInput" accept="image/*" capture="environment" hidden>
     <label for="photoInput">Take Picture</label>
     <img id="preview" alt="Vorschau">
     <button id="uploadBtn" onclick="upload()" disabled>Commit</button>
-    <p id="status">Status</p>
+    <p id="status"></p>
   </body>
 </html>

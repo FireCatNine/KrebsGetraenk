@@ -67,7 +67,9 @@ async function upload() {
       uploadBtn.disabled = false;
     } else {
       const errorData = await response.json();
-      setStatus(`Upload-Error: ${errorData.message}`);
+      if (response.status === 422 && errorData.message.includes("sha")) {
+        setStatus("Error: An image has already been uploaded today!");
+      } else setStatus(`Upload-Error: ${errorData.message}`);
       uploadBtn.disabled = false;
     }
   } catch (err) {
