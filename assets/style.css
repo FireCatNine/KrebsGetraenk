@@ -14,7 +14,8 @@
       --muted:#9a968c;
       --card:#1f1f1d;
       --line:#32312e;
-      --accent:#6fb7a2}
+      --accent:#6fb7a2
+    }
   }
 
   *{
@@ -63,32 +64,30 @@
   height: auto;
   object-fit: contain;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
   #hero{
-    background: var(--card);
+    background-color: var(--card);
     border: 1px solid var(--line);
     border-radius: 14px;
     overflow: hidden;
+    max-height: 75vh;
+    width: 85vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   #hero img{
-    display: block;
-    width: 100%;
-    max-height: 75vh;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
-    background: #000;
-  }
-  .cap{ /*???*/
-    padding: 12px 16px;
-    display: flex;
-    justify-content :space-between;
-    color: var(--muted);
-    font-size: 0.9rem;
   }
   .empty{
-    width: 20vw;
+    width: 100%;
     padding: 48px 16px;
     text-align: center;
     color: var(--muted);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
