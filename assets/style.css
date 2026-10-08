@@ -7,10 +7,19 @@
     --line:#e1ddd5;
     --accent:#2f6f5e
   }
-  @media(prefers-color-scheme: dark){:root{--background:#161615;--foreground:#eeece6;--muted:#9a968c;--card:#1f1f1d;--line:#32312e;--accent:#6fb7a2}}
+  @media(prefers-color-scheme: dark) {
+    :root {
+      --background:#161615;
+      --foreground:#eeece6;
+      --muted:#9a968c;
+      --card:#1f1f1d;
+      --line:#32312e;
+      --accent:#6fb7a2}
+  }
 
   *{
-    box-sizing:border-box
+    margin: 0;
+    padding: 0;
   }
   body{
     margin: 0;
@@ -19,20 +28,43 @@
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   }
   main{
-    max-width: 960px;
-    margin: 0 auto;
     padding: 20px 16px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
-  h1{
+  #siteHeader{
     font-size: 1.3rem;
-    margin: 0 0 16px
+    margin: 0 0 16px 0;
   }
-  h2{
+  #archivHeader{
     font-size: 1rem;
     margin: 32px 0 12px;
     color: var(--muted);
     font-weight: 600;
   }
+
+#grid{
+  display: grid;
+  grid-template-columns: 1fr; 
+  justify-items: center; 
+  align-items: center; 
+  gap: 2rem; 
+  
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+#grid img{
+  width: auto;
+  max-width: 100%;
+  max-height: 500px; 
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
   #hero{
     background: var(--card);
@@ -47,7 +79,7 @@
     object-fit: contain;
     background: #000;
   }
-  .cap{
+  .cap{ /*???*/
     padding: 12px 16px;
     display: flex;
     justify-content :space-between;
@@ -55,6 +87,7 @@
     font-size: 0.9rem;
   }
   .empty{
+    width: 20vw;
     padding: 48px 16px;
     text-align: center;
     color: var(--muted);

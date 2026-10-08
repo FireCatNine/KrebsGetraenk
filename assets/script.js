@@ -2,7 +2,7 @@ const START = "2026-01-01";//YYYY-MM-DD
 
 const hero= document.getElementById("hero");
 const grid= document.getElementById("grid");
-const title= document.querySelector("h2");
+const title= document.getElementById("archivHeader");
 
 const padding= n=> String(n).padStart(2, "0");
 const format= d=> `${d.getFullYear()}-${padding(d.getMonth()+ 1)}-${padding(d.getDate())}`;
