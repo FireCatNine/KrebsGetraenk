@@ -2,13 +2,10 @@ const photoInput = document.getElementById('photoInput');
 const preview = document.getElementById('preview');
 const uploadBtn = document.getElementById('uploadBtn');
 const tokenEle = document.getElementById("token");
+const statusEle = document.getElementById("status");
 
 let base64Image = '';
 let fileName = '';
-
-if (localStorage.getItem("token")) {
-  tokenEle.value = localStorage.getItem("token");
-}
 
 const padding = n => String(n).padStart(2, "0");
 const format = d => `${d.getFullYear()}-${padding(d.getMonth() + 1)}-${padding(d.getDate())}`;
@@ -38,10 +35,12 @@ tokenEle.addEventListener("keydown", (e) => {
     tokenEle.hidden = true;
 });
 
-async function uploadToGitHub() {
-  const token = tokenEle.value.trim();
+const setStatus = s => statusEle.innerText = s;
+
+async function upload() {
+  const token = localStorage.getItem("token")
   if (!token) {
-    alert("Please enter Token");
+    setStatus("Please enter a Token!");
     return;
   }
 
@@ -64,14 +63,15 @@ async function uploadToGitHub() {
     });
 
     if (response.ok) {
-      alert("Success!");
+      setStatus("Success!");
+      uploadBtn.disabled = false;
     } else {
       const errorData = await response.json();
-      alert(`Upload-Error: ${errorData.message}`);
+      setStatus(`Upload-Error: ${errorData.message}`);
       uploadBtn.disabled = false;
     }
   } catch (err) {
-    alert("Network-Error!");
+    setStatus("Network-Error!");
     uploadBtn.disabled = false;
   }
 }

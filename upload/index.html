@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="assets/style.css">
-  <link rel="preload" href="assets/script.js" as="script">
-  <title>Krebsgetränk-Upload</title>
-</head>
-<script src="assets/script.js" defer></script>
-<body>
-
-  <h2>Picture-Upload</h2>
-
-  <input type="password" id="token" placeholder="Token">
-
-  <input type="file" id="photoInput" accept="image/*" capture="environment">
-  <img id="preview" alt="Vorschau">
-
-  <button id="uploadBtn" onclick="uploadToGitHub()" disabled>Commit</button>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="preload" href="assets/script.js" as="script">
+    <title>Krebsgetränk-Upload</title>
+    <script src="assets/script.js" defer></script>
+  </head>
+  <body>
+    <h2>Image-Upload</h2>
+    <input type="password" id="token" placeholder="Token">
+    <input type="file" id="photoInput" accept="image/*" capture="environment" hidden>
+    <label for="photoInput">Take Picture</label>
+    <img id="preview" alt="Vorschau">
+    <button id="uploadBtn" onclick="upload()" disabled>Commit</button>
+    <p id="status">Status</p>
+  </body>
 </html>
