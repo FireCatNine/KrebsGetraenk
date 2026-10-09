@@ -1,5 +1,4 @@
-body{
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+body {
     max-width: 400px;
     margin: 20px auto;
     padding: 10px;
@@ -7,10 +6,9 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgb(15, 15, 15);
-    color: white;
 }
-input, button, label{
+
+input, button, label {
     font-family: inherit;
     font-size: 1rem;
     font-weight: 400;
@@ -18,20 +16,26 @@ input, button, label{
     margin-bottom: 12px;
     padding: 16px;
     box-sizing: border-box;
-    color: white;
-    background-color: rgb(46, 46, 46);
-    border: solid 1px rgb(128, 128, 128);
+    background-color: var(--card);
+    border: solid 1px var(--line);
+    color: var(--foreground);
     border-radius: 4px;
     outline: none;
     cursor: pointer;
     text-align: center;
 }
-#preview{
+
+#preview {
     max-width: 100%;
     display: none;
     margin-bottom: 15px;
 }
-#status{
+
+#status {
     margin: 0 0;
     text-align: center;
+}
+
+h2 {
+    margin-bottom: 2rem;
 }
