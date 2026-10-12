@@ -1,4 +1,4 @@
-const START = "2026-01-01"; //YYYY-MM-DD
+const START = "2026-10-01"; //YYYY-MM-DD
 
 const hero = document.getElementById("hero");
 const grid = document.getElementById("grid");
