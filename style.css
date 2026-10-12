@@ -7,7 +7,7 @@ main {
 }
 
 blockquote {
-  border-left: 4px solid currentColor;
+  border-left: 1px solid currentColor; /*Muss die 4px fett sein?*/
   padding-left: 1.5rem;
   font-style: italic;
   margin-top: 1.5rem;
