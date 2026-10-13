@@ -11,8 +11,33 @@
     <script src="script.js" defer></script>
   </head>
   <body>
+    <header>
+      <div id="logoWrapper">
+        <a href="#"><img src="assets/favicon.svg" alt="Logo"></a>
+      </div>
+      <div id="siteHeaderWrapper">
+        <h1>MONSTER WALL</h1> <!-- Entweder einheitlicher Titel oder Unterseitenbezeichnung -->
+      </div>
+      <div id="burgerWrapper">
+        <button id="burger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+    <nav>
+      <div id="navHead"></div>
+      <div id="navContent">
+        <div class="navEle">
+          <span class="navCurrent"></span>
+          <div class="navLink">
+            <a href="#">Home</a>
+          </div>
+        </div>
+      </div>
+    </nav>
     <main>
-      <h1 id="siteHeader">MONSTER WALL</h1>
       <section id="hero"><div class="empty"><p>Lade ...</p></div></section>
       <h2 id="archivHeader" hidden>Archiv</h2>
       <div id="grid"></div>
