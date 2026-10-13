@@ -48,3 +48,17 @@ main {
   background: var(--card); /*Same here*/
   border-radius: 6px;
 }
+#shape_space {
+  width: min(92vw, 480px);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  user-select: none;
+  touch-action: none;
+}
+
+#shape_space > div {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
