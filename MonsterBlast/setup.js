@@ -1,7 +1,7 @@
 import { Shape } from "./game/shape.js"; // Achte auf die Endung .js, falls du kein Build-Tool nutzt
 
 const board= document.getElementById("board");
-const boardMatrix= Array.from({ length: 8 }, () => Array(8).fill(0));
+const boardMatrix= Array.from({ length: 8 }, ()=> Array(8).fill(0));
 
 //Spielfeld
 for (let i= 0; i< 64; i++){
