@@ -81,10 +81,10 @@ main {
 }
 
 blockquote {
-  border-left: 4px solid currentColor;
-  padding-left: 1.5em;
-  margin-left: 0;
+  border-left: 1px solid currentColor;
+  padding-left: 1.5rem;
   font-style: italic;
+  margin-top: 1.5rem;
 }
 
 #archivHeader {
