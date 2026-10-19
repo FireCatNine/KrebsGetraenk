@@ -1,4 +1,4 @@
-body {
+main {
     max-width: 400px;
     margin: 20px auto;
     padding: 10px;
@@ -6,23 +6,27 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
 
-input, button, label {
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 400;
-    width: 80%;
-    margin-bottom: 12px;
-    padding: 16px;
-    box-sizing: border-box;
-    background-color: var(--card);
-    border: solid 1px var(--line);
-    color: var(--foreground);
-    border-radius: 4px;
-    outline: none;
-    cursor: pointer;
-    text-align: center;
+    input, button, label {
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 400;
+        width: 80%;
+        margin-bottom: 12px;
+        padding: 16px;
+        box-sizing: border-box;
+        background-color: var(--card);
+        border: solid 1px var(--line);
+        color: var(--foreground);
+        border-radius: 4px;
+        outline: none;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 2rem;
+    }
 }
 
 #preview {
@@ -34,8 +38,4 @@ input, button, label {
 #status {
     margin: 0 0;
     text-align: center;
-}
-
-h2 {
-    margin-bottom: 2rem;
 }

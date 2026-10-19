@@ -4,45 +4,17 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="assets/global.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/assets/navigation.css">
     <link rel="preload" href="script.js" as="script">
-    <link rel="preload" href="assets/globals.js" as="script">
+    <link rel="preload" href="assets/navigation.js" as="script">
     <link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Krebsgetränke</title>
     <script src="script.js" defer></script>
-    <script src="assets/globals.js" defer></script>
+    <script src="assets/navigation.js" defer></script>
   </head>
   <body>
-    <header>
-      <div id="logoWrapper">
-        <a href="#"><img src="assets/favicon.svg" alt="Logo"></a>
-      </div>
-      <div id="siteHeaderWrapper">
-        <h1>MONSTER WALL</h1>
-      </div>
-      <div id="burgerWrapper">
-        <button id="burger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-    </header>
-    <nav id="nav" class="hidden">
-      <div id="navHead">
-        <div id="closeNavWrapper">
-          <button id="closeNav"></button>
-        </div>
-      </div>
-      <div id="navContent">
-        <div class="navEle">
-          <span class="navCurrent"></span>
-          <div class="navLink">
-            <a href="#">Home</a>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <div id="navPlaceholder"></div>
     <main>
       <section id="hero"><div class="empty"><p>Lade ...</p></div></section>
       <h2 id="archivHeader" hidden>Archiv</h2>
