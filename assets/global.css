@@ -30,8 +30,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Header */
-
 header {
   height: 70px;
   background-color: var(--card);
@@ -78,9 +76,9 @@ header {
     align-items: center;
 
     button {
+      position: relative;
       width: 30px;
-      height: auto;
-      aspect-ratio: 1/1;
+      height: 30px;
       border: 1px solid var(--muted);
       cursor: pointer;
       outline: none;
@@ -92,13 +90,31 @@ header {
       flex-direction: column;
       padding: 4px;
 
-      &.open {
-        span {
-          width: 80%;
-        }
+      span {
+        position: absolute;
+        height: 2px;
+        width: 16px;
+        background-color: var(--muted);
+        border-radius: 1px;
+        transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+        transform-origin: center;
+      }
 
+      span:nth-child(1) {
+        transform: translateY(-6px);
+      }
+
+      span:nth-child(2) {
+        transform: translateY(0);
+      }
+
+      span:nth-child(3) {
+        transform: translateY(6px);
+      }
+
+      &.open {
         span:nth-child(1) {
-          transform: translateY(6px) rotate(45deg);
+          transform: translateY(0) rotate(45deg);
         }
 
         span:nth-child(2) {
@@ -106,21 +122,12 @@ header {
         }
         
         span:nth-child(3) {
-          transform: translateY(-6px) rotate(-45deg);
+          transform: translateY(0) rotate(-45deg);
         }
-      }
-
-      span {
-        height: 2px;
-        width: 65%;
-        background-color: var(--muted);
-        transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out, translate 0.2s ease-in-out;
       }
     }
   }
 }
-
-/* Naviagtion */
 
 nav {
   height: 100vh;
