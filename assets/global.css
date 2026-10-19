@@ -27,4 +27,146 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  overflow-x: hidden;
+}
+
+/* Header */
+
+header {
+  height: 70px;
+  background-color: var(--card);
+  color: var(--foreground);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 70px 1fr 70px;
+  margin-bottom: 0.5rem;
+
+  #logoWrapper {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1/1;
+
+    a {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1/1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        width: 80%;
+        height: auto;
+        aspect-ratio: 1/1;
+      }
+    }
+  }
+
+  #siteHeaderWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+      font-size: 1.3rem;
+    }
+  }
+
+  #burgerWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    button {
+      width: 30px;
+      height: auto;
+      aspect-ratio: 1/1;
+      border: 1px solid var(--muted);
+      cursor: pointer;
+      outline: none;
+      background-color: var(--card);
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-direction: column;
+      padding: 4px;
+
+      &.open {
+        span {
+          width: 80%;
+        }
+
+        span:nth-child(1) {
+          transform: translateY(6px) rotate(45deg);
+        }
+
+        span:nth-child(2) {
+          opacity: 0;
+        }
+        
+        span:nth-child(3) {
+          transform: translateY(-6px) rotate(-45deg);
+        }
+      }
+
+      span {
+        height: 2px;
+        width: 65%;
+        background-color: var(--muted);
+        transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out, translate 0.2s ease-in-out;
+      }
+    }
+  }
+}
+
+/* Naviagtion */
+
+nav {
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: transparent;
+  width: min(90vw, 350px);
+  transition: transform 0.2s ease-in-out;
+
+  &.hidden {
+    transform: translateX(min(90vw, 350px));
+  }
+
+  #navHead {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    height: 70px;
+    border-bottom: 1px solid var(--line);
+    background-color: transparent;
+
+    #closeNavWrapper {
+      display: flex;
+      height: 100%;
+      width: auto;
+      aspect-ratio: 1/1;
+      justify-content: center;
+      align-items: center;
+
+      #closeNav {
+        width: 30px;
+        height: auto;
+        aspect-ratio: 1/1;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        background-color: transparent;
+        border-radius: 6px;
+      }
+    }
+  }
+
+  #navContent {
+    border-left: 1px solid var(--line);
+    height: 100%;
+    background-color: var(--card);
+  }
 }
