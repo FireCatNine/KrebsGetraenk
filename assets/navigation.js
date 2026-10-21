@@ -1,5 +1,5 @@
 const isGitHubPages = window.location.hostname.includes('github.io')
-const basePath = isGitHubPages ? '/' + window.location.pathname.split('/')[1] + '/' : '/'
+const basePath = isGitHubPages ? '/KrebsGetraenk/' : '/'
 const fetchUrl = basePath + 'assets/navigation.html'
 
 fetch(fetchUrl)
@@ -13,9 +13,7 @@ fetch(fetchUrl)
             document.querySelectorAll('nav a, header a, header img').forEach(ele => {
                 const attr = ele.hasAttribute('href') ? 'href' : 'src';
                 const val = ele.getAttribute(attr);
-                if (val && val.startsWith('/')) {
-                    ele.setAttribute(attr, basePath.slice(0, basePath.length - 1) + val);
-                }
+                if (val) ele.setAttribute(attr, basePath + val.slice(1));
             });
         }
 
