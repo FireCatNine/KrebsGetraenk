@@ -1,0 +1,19 @@
+main {
+  padding: 20px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+blockquote {
+  border-left: 1px solid currentColor;
+  padding-left: 1.5rem;
+  font-style: italic;
+  margin-top: 1.5rem;
+}

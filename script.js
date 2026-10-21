@@ -1,44 +1,42 @@
-const START = "2026-10-01"; //YYYY-MM-DD
+const START = "2026-10-01"; // YYYY-MM-DD
 
 const hero = document.getElementById("hero");
-const grid = document.getElementById("grid");
-const archivHeader = document.getElementById("archivHeader");
 
 const padding = n => String(n).padStart(2, "0");
 const format = d => `${d.getFullYear()}-${padding(d.getMonth()+ 1)}-${padding(d.getDate())}`;
 
 function load(name) {
   return new Promise(res => {
-    const img= new Image();
-    img.alt= name;
-    img.onload= () => res(img);
-    img.onerror= () => res(null);
-    img.src= "imgs/"+ name;
+    const img = new Image();
+    img.alt = name;
+    img.onload = () => res(img);
+    img.onerror = () => res(null);
+    img.src = "/imgs/" + name;
   });
 }
 
 (async function start() {
   const [y, m, d] = START.split("-").map(Number);
-  const today = new Date();
-  const days = [];
+  const startDate = new Date(y, m - 1, d);
+  let current = new Date();
+  let foundImage = null;
 
-  for (let t = new Date(y, m - 1, d); t <= today; t.setDate(t.getDate() + 1)) {
-    days.push(format(t) + ".png");
+  while (current >= startDate) {
+    const name = format(current) + ".png";
+    foundImage = await load(name);
+
+    if (foundImage) {
+      break;
+    }
+
+    current.setDate(current.getDate() - 1);
   }
 
-  const result = await Promise.all(days.map(load));
-  const images = result.filter(Boolean).reverse(); 
-
-  if (!images.length) {
+  if (!foundImage) {
     hero.innerHTML = '<div class="empty">Keine Bilder vorhanden.</div>';
-    grid.hidden = archivHeader.hidden= true;
     return;
   }
 
   hero.innerHTML = "";
-  hero.appendChild(images[0]);
-
-  grid.innerHTML = "";
-  for (const img of images.slice(1)) grid.appendChild(img);
-  grid.hidden = archivHeader.hidden = images.length === 1;
+  hero.appendChild(foundImage);
 })();
