@@ -1,9 +1,23 @@
-fetch("/assets/navigation.html")
+const isGitHubPages = window.location.hostname.includes('github.io')
+const basePath = isGitHubPages ? '/' + window.location.pathname.split('/')[1] + '/' : '/'
+const fetchUrl = basePath + 'assets/navigation.html'
+
+fetch(fetchUrl)
     .then(res => res.text())
     .then(html => {
         const placeholder = document.getElementById("navPlaceholder")
         const currentSite = placeholder.dataset.site
         placeholder.outerHTML = html
+
+        if (isGitHubPages) {
+            document.querySelectorAll('nav a, header a, header img').forEach(ele => {
+                const attr = ele.hasAttribute('href') ? 'href' : 'src';
+                const val = ele.getAttribute(attr);
+                if (val && val.startsWith('/')) {
+                    ele.setAttribute(attr, basePath.slice(0, basePath.length - 1) + val);
+                }
+            });
+        }
 
         const burgerButton = document.getElementById("burger")
         const nav = document.getElementById("nav")

@@ -11,7 +11,7 @@ function load(name) {
     img.alt = name;
     img.onload = () => res(img);
     img.onerror = () => res(null);
-    img.src = "/imgs/" + name;
+    img.src = "imgs/" + name;
   });
 }
 
