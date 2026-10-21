@@ -6,45 +6,6 @@ main {
   align-items: center;
 }
 
-blockquote {
-  border-left: 1px solid currentColor;
-  padding-left: 1.5rem;
-  font-style: italic;
-  margin-top: 1.5rem;
-}
-
-#archivHeader {
-  font-size: 1rem;
-  margin: 32px 0 12px;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-
-
-#grid {
-  display: grid;
-  grid-template-columns: 1fr; 
-  justify-items: center; 
-  align-items: center; 
-  gap: 2rem; 
-  
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-#grid img {
-  width: auto;
-  max-width: 100%;
-  max-height: 500px; 
-  height: auto;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
-
-
 #hero {
   background-color: var(--card);
   border: 1px solid var(--line);
