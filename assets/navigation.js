@@ -2,6 +2,7 @@ fetch("/assets/navigation.html")
     .then(res => res.text())
     .then(html => {
         const placeholder = document.getElementById("navPlaceholder")
+        const currentSite = placeholder.dataset.site
         placeholder.outerHTML = html
 
         const burgerButton = document.getElementById("burger")
@@ -19,13 +20,10 @@ fetch("/assets/navigation.html")
         burgerButton.addEventListener("click", toggleNav)
         navBackground.addEventListener("click", toggleNav)
 
-        const currentPath = window.location.pathname;
-        console.log(currentPath)
-
         document.querySelectorAll(".navEle").forEach((navEle) => {
+            if(navEle.dataset.site === currentSite) navEle.classList.add("active")
+
             const a = navEle.querySelector("a")
-            const href = a?.getAttribute("href")
-            if(href === currentPath) navEle.classList.add("active")
 
             a?.addEventListener("click", () => {
                 document.querySelectorAll(".navEle").forEach((navEle) => navEle.classList.remove("active"))
