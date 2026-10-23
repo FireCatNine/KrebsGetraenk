@@ -20,12 +20,14 @@ fetch(fetchUrl)
         const burgerButton = document.getElementById("burger")
         const nav = document.getElementById("nav")
         const body = document.querySelector("body")
+        const htmlEle = document.querySelector("html")
         const navBackground = document.getElementById("navBackground")
 
         function toggleNav() {
             nav.classList.toggle("hidden")
             burgerButton.classList.toggle("open")
             body.classList.toggle("noScroll")
+            htmlEle.classList.toggle("noScroll")
             navBackground.classList.toggle("active")
         }
 

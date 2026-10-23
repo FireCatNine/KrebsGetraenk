@@ -1,9 +1,17 @@
 html {
   scrollbar-gutter: stable;
+  overflow-x: hidden;
   touch-action: pan-y;
+  overscroll-behavior-x: none;
 }
 
-body.noScroll {
+body {
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+}
+
+body.noScroll, html.noScroll {
   overflow: hidden;
   touch-action: none;
 }
@@ -109,8 +117,8 @@ header {
 }
 
 nav {
-  height: calc(100vh - 88px);
-  position: absolute;
+  height: calc(100dvh - 88px);
+  position: fixed;
   top: 70px;
   right: 0;
   width: min(90vw, 350px);
@@ -180,8 +188,7 @@ nav {
   width: 100vw;
   height: 100vh;
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   backdrop-filter: brightness(1);
   transition: backdrop-filter 0.2s ease-in-out, visibility 0.2s ease-in-out;
   z-index: 100;
