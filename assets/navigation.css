@@ -1,5 +1,6 @@
 html {
   scrollbar-gutter: stable;
+  touch-action: pan-y;
 }
 
 body.noScroll {
