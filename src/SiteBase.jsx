@@ -3,6 +3,7 @@ import Header from './components/Header'
 import Navbar from './components/Navbar'
 
 import Home from './pages/Home'
+import Archive from './pages/Archive'
 
 export default function SiteBase() {
   return (
@@ -12,6 +13,7 @@ export default function SiteBase() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/archive" element={<Archive />} />
         </Routes>
       </main>
     </BrowserRouter>
