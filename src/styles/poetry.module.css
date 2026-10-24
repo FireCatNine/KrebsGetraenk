@@ -1,4 +1,4 @@
-main {
+.content {
   padding: 20px 16px 48px;
   display: flex;
   flex-direction: column;
@@ -6,12 +6,12 @@ main {
   align-items: center;
 }
 
-h2 {
+.headline {
   margin-bottom: 1rem;
   color: var(--foreground);
 }
 
-blockquote {
+.blockquote {
   border-left: 1px solid currentColor;
   padding-left: 1.5rem;
   font-style: italic;

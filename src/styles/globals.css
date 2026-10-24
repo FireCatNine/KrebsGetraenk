@@ -23,9 +23,28 @@
   padding: 0;
 }
 
+html {
+  scrollbar-gutter: stable;
+  overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+
+  &.noScroll {
+    overflow: hidden;
+    touch-action: none;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   overflow-x: hidden;
+  touch-action: pan-y;
+  overscroll-behavior-x: none;
+
+  &.noScroll {
+    overflow: hidden;
+    touch-action: none;
+  }
 }
