@@ -1,0 +1,30 @@
+.monsterBlastContent {
+  padding: 20px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  .headline {
+    margin-bottom: 1rem;
+    color: var(--foreground);
+  }
+
+  .gameWrapper {
+    width: min(95vw, 80dvh);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+
+    .grid {
+      aspect-ratio: 1/1;
+      height: min(85vw, 50dvh);
+      width: min(85vw, 50dvh);
+      background-color: var(--card);
+    }
+
+    /*Alles an Game css hier*/
+  }
+}

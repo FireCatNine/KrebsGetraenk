@@ -1,75 +1,73 @@
 import styles from '../styles/poetry.module.css'
 
 export default function Poetry() {
-    return(
-        <>
-            <div className={styles.content}>
-                <h2 className={styles.headline}>Lyrik</h2>
-                <blockquote className={styles.blockquote}>
-                  <p>
-                    Gegrüßet seist Du an der Monster Wall!<br/>
-                    Den höchsten Quell, den unsre Schul' besitzt.<br/>
-                    Ach, Demut Qual! Im Netze ganz und gar.<br/>
-                    Kein' Stätt' ist hier, die unsre Größe deckt.
-                  </p>
-                  <p><br/></p>
-                  <p>
-                    Die Frage nun, die wir uns stetig stell'n,<br/>
-                    Von Anbeginn der Zeit der Menschheit schon:<br/>
-                    Worin des Daseins tiefster Sinne blüht.<br/>
-                    So sannen wir und geben Antwort so:
-                  </p>
-                  <p><br/></p>
-                  <p>
-                    Seit jenem Tage des fünfundzwanzigsten<br/>
-                    Des Herbstmondes im Jahre sechsundzwanzig<br/>
-                    Begannen wir das Sammeln unsres Nektars,<br/>
-                    Was uns als wahres Lebenselixier dient.
-                  </p>
-                  <p><br/></p>
-                  <p>
-                    So rettet uns in mancher Deutschesstunde,<br/>
-                    Wo uns die Pein der Stunde schier erdrücket.<br/>
-                    Nur ein Mittel macht jene Qual uns leidlich,<br/>
-                    Wo ohne Trost jen' Leid gewaltig wachset.
-                  </p>
-                  <p><br/></p>
-                  <p>
-                    Und wahrlich, manche Dose häufte gerne,<br/>
-                    Wahrhaft als unsrer Punkte karger Schnitt.<br/>
-                    Fürwahr ist dies kein großes Meisterstücke.<br/>
-                    Wahrheitsgemäß dies Kunstwerk stolz verbleibt.
-                  </p>
-                  <p><br/></p>
-                  <p>
-                    Die Lehrerin, die uns dort stolz belehrte,<br/>
-                    Sollt' Schiller und Konsorten lassen ruhen.<br/>
-                    Parliert so frei von alter Dichtergilde<br/>
-                    Und sollt' doch unser eigen Werke deuten.
-                  </p>
-                  <p><br/></p>
-                  <p>
-                    Einst strebten wir im Matheunterrichte<br/>
-                    Und tranken – wer auch hätte es uns verdacht? –<br/>
-                    Als Jener uns auf das Krebsgetränk ansprach.<br/>
-                    Begeistert wuchs die Wand nun immerwährend.
-                  </p>
-                  <p><br/></p>
-                  <p>
-                    So wuchs die Wall durch unsre Müh' und Kraft,<br/>
-                    Auf dass sie in den Himmel raget hoch.<br/>
-                    Gebenedeit sei unser Krebsgetränk.<br/>
-                    Gelobt von Ewigkeit zu Ewigkeit.
-                  </p>
-                  <p><br/></p>
-                  <p>
-                    Um zu erreichen, was das Ziele war,<br/>
-                    Unausweichlich, schulisch klar, vorbestimmt,<br/>
-                    Dieser Text hier als Mehrwert sichtbar ist<br/>
-                    Und deshalb nun im Blankvers sei verfasst.
-                  </p>
-                </blockquote>
-            </div>
-        </>
-    )
+  return(
+    <div className={styles.content}>
+      <h2 className={styles.headline}>Lyrik</h2>
+      <blockquote className={styles.blockquote}>
+        <p>
+          Gegrüßet seist Du an der Monster Wall!<br/>
+          Den höchsten Quell, den unsre Schul' besitzt.<br/>
+          Ach, Demut Qual! Im Netze ganz und gar.<br/>
+          Kein' Stätt' ist hier, die unsre Größe deckt.
+        </p>
+        <p><br/></p>
+        <p>
+          Die Frage nun, die wir uns stetig stell'n,<br/>
+          Von Anbeginn der Zeit der Menschheit schon:<br/>
+          Worin des Daseins tiefster Sinne blüht.<br/>
+          So sannen wir und geben Antwort so:
+        </p>
+        <p><br/></p>
+        <p>
+          Seit jenem Tage des fünfundzwanzigsten<br/>
+          Des Herbstmondes im Jahre sechsundzwanzig<br/>
+          Begannen wir das Sammeln unsres Nektars,<br/>
+          Was uns als wahres Lebenselixier dient.
+        </p>
+        <p><br/></p>
+        <p>
+          So rettet uns in mancher Deutschesstunde,<br/>
+          Wo uns die Pein der Stunde schier erdrücket.<br/>
+          Nur ein Mittel macht jene Qual uns leidlich,<br/>
+          Wo ohne Trost jen' Leid gewaltig wachset.
+        </p>
+        <p><br/></p>
+        <p>
+          Und wahrlich, manche Dose häufte gerne,<br/>
+          Wahrhaft als unsrer Punkte karger Schnitt.<br/>
+          Fürwahr ist dies kein großes Meisterstücke.<br/>
+          Wahrheitsgemäß dies Kunstwerk stolz verbleibt.
+        </p>
+        <p><br/></p>
+        <p>
+          Die Lehrerin, die uns dort stolz belehrte,<br/>
+          Sollt' Schiller und Konsorten lassen ruhen.<br/>
+          Parliert so frei von alter Dichtergilde<br/>
+          Und sollt' doch unser eigen Werke deuten.
+        </p>
+        <p><br/></p>
+        <p>
+          Einst strebten wir im Matheunterrichte<br/>
+          Und tranken – wer auch hätte es uns verdacht? –<br/>
+          Als Jener uns auf das Krebsgetränk ansprach.<br/>
+          Begeistert wuchs die Wand nun immerwährend.
+        </p>
+        <p><br/></p>
+        <p>
+          So wuchs die Wall durch unsre Müh' und Kraft,<br/>
+          Auf dass sie in den Himmel raget hoch.<br/>
+          Gebenedeit sei unser Krebsgetränk.<br/>
+          Gelobt von Ewigkeit zu Ewigkeit.
+        </p>
+        <p><br/></p>
+        <p>
+          Um zu erreichen, was das Ziele war,<br/>
+          Unausweichlich, schulisch klar, vorbestimmt,<br/>
+          Dieser Text hier als Mehrwert sichtbar ist<br/>
+          Und deshalb nun im Blankvers sei verfasst.
+        </p>
+      </blockquote>
+    </div>
+  )
 }

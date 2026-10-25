@@ -44,6 +44,10 @@ export default function Header() {
               <span className={styles.navCurrent}></span>
               <NavLink to='/poetry/' className={({isActive}) => isActive ? clsx(styles.navLink, styles.active) : styles.navLink} onClick={toggleNavbar}>Lyrik</NavLink>
             </div>
+            <div className={styles.navEle}>
+              <span className={styles.navCurrent}></span>
+              <NavLink to='/monsterblast/' className={({isActive}) => isActive ? clsx(styles.navLink, styles.active) : styles.navLink} onClick={toggleNavbar}>Monster Blast</NavLink>
+            </div>
           </nav>
           <div className={clsx(styles.navBackground, navbarOpen ? styles.active : '')} onClick={toggleNavbar}></div>
         </>

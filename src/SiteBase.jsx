@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Archive from './pages/Archive'
 import Poetry from './pages/Peotry'
 import Upload from './pages/Upload'
+import MonsterBlast from './pages/MonsterBlast'
 
 export default function SiteBase() {
   return (
@@ -16,6 +17,7 @@ export default function SiteBase() {
           <Route path="/archive/" element={<Archive />} />
           <Route path="/poetry/" element={<Poetry />} />
           <Route path="/upload/" element={<Upload />} />
+          <Route path="/monsterblast/" element={<MonsterBlast />} />
         </Routes>
       </main>
     </BrowserRouter>
