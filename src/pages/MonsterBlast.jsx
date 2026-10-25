@@ -5,7 +5,7 @@ import init from '../scripts/monster_blast/init'
 export default function MonsterBlast() {
   const gameWrapperRef = useRef(null)
 
-  useEffect(init(gameWrapperRef), [])
+  useEffect(() => init(gameWrapperRef), [])
 
   return(
     <div className="monsterBlastContent">
