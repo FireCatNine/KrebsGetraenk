@@ -4,7 +4,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
 
   .headline {
     margin-bottom: 1rem;
@@ -14,15 +13,41 @@
   .gameWrapper {
     width: min(95vw, 80dvh);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 1.5rem;
 
-    .grid {
-      aspect-ratio: 1/1;
-      height: min(85vw, 50dvh);
-      width: min(85vw, 50dvh);
-      background-color: var(--card);
+    #board {
+        width: min(85vw, 50dvh);
+        aspect-ratio: 1/1;
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: repeat(8, 1fr);
+        gap: 4px;
+        padding: 4px;
+        background: var(--line);
+        border-radius: 8px;
+    }
+
+    #board .cell {
+        background: var(--card);
+        border-radius: 4px;
+    }
+
+    #shapeSpace {
+        width: min(95vw, 80dvh);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        user-select: none;
+        touch-action: none;
+    }
+
+    .shapePlace {
+        aspect-ratio: 1/1;
+        display: grid;
+        place-items: center;
     }
 
     /*Alles an Game css hier*/

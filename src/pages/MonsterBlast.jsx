@@ -1,18 +1,34 @@
 import { useEffect, useRef } from 'react'
 import '../styles/monster_blast.css'
-import init from '../scripts/monster_blast/init'
+import Game from '../scripts/monster_blast/game'
 
 export default function MonsterBlast() {
-  const gameWrapperRef = useRef(null)
+    const gameWrapperRef = useRef(null)
 
-  useEffect(() => init(gameWrapperRef), [])
+    useEffect(() => {
+        const game = new Game(gameWrapperRef.current) //äußerster wrapper fürs game
+        game.init()
+        return () => game.cleanup() //cleanup func für global event listeners weil react die seite nie neulädt. Arrow func damit js den bezug zum game objekt nicht verliert.
+    }, [])
 
-  return(
-    <div className="monsterBlastContent">
-      <h2 className="headline">Monster Blast</h2>
-      <div className="gameWrapper" ref={gameWrapperRef}>
-        <div className="grid"></div>
-      </div>
-    </div>
-  )
+    return(
+        <div className="monsterBlastContent">
+            <h2 className="headline">Monster Blast</h2>
+            <div className="gameWrapper" ref={gameWrapperRef}>
+                <div id='topBar'>
+                    <div id='highScore'>
+                        <span id='highScoreIcon' role='img'></span>
+                        <div id='highScoreVal'></div>
+                    </div>
+                    <div id='score'></div>
+                </div>
+                <div id='board'></div>
+                <div id='shapeSpace'>
+                    <div id='place0' className='shapePlace'></div>
+                    <div id='place1' className='shapePlace'></div>
+                    <div id='place2' className='shapePlace'></div>
+                </div>
+            </div>
+        </div>
+    )
 }
