@@ -18,9 +18,9 @@ export default function MonsterBlast() {
                 <div id='topBar'>
                     <div id='highScore'>
                         <span id='highScoreIcon' role='img'></span>
-                        <div id='highScoreVal'></div>
+                        <div id='highScoreVal'>123.456.789</div>
                     </div>
-                    <div id='score'></div>
+                    <div id='score'>17.365</div>
                 </div>
                 <div id='board'></div>
                 <div id='shapeSpace'>

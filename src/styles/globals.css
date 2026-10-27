@@ -1,4 +1,10 @@
 :root {
+    --header-height: 70px;
+    --header-margin-bottom: 10px;
+    --content-height: calc(100dvh - var(--header-height) - var(--header-margin-bottom) - 1px); /*Screen Height - Header-Height - Header-Margin - Header-Border*/
+}
+
+:root {
   --background:#f6f4f0;
   --foreground:#1d1d1b;
   --muted:#77736b;

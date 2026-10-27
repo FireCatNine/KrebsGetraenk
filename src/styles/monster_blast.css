@@ -1,55 +1,113 @@
 .monsterBlastContent {
-  padding: 20px 16px 48px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  .headline {
-    margin-bottom: 1rem;
-    color: var(--foreground);
-  }
-
-  .gameWrapper {
-    width: min(95vw, 80dvh);
+    padding: 20px 16px 48px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 1.5rem;
+    height: calc(var(--content-height) - 68px);
 
-    #board {
-        width: min(85vw, 50dvh);
-        aspect-ratio: 1/1;
-        display: grid;
-        grid-template-columns: repeat(8, 1fr);
-        grid-template-rows: repeat(8, 1fr);
-        gap: 4px;
-        padding: 4px;
-        background: var(--line);
-        border-radius: 8px;
+    .headline {
+      margin-bottom: 1rem;
+      color: var(--foreground);
+      flex-shrink: 0;
     }
 
-    #board .cell {
-        background: var(--card);
-        border-radius: 4px;
-    }
-
-    #shapeSpace {
+    .gameWrapper {
         width: min(95vw, 80dvh);
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        user-select: none;
-        touch-action: none;
-    }
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 1.5rem;
+        gap: 1rem;
+        flex: 1;
+        min-height: 0;
 
-    .shapePlace {
-        aspect-ratio: 1/1;
-        display: grid;
-        place-items: center;
-    }
+        #board {
+            width: auto;
+            max-height: 90vw;
+            aspect-ratio: 1/1;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 4px;
+            padding: 4px;
+            background: var(--line);
+            border-radius: 8px;
+            flex: 3;
+            min-height: 0;
+        }
 
-    /*Alles an Game css hier*/
-  }
+        #board .cell {
+            background: var(--card);
+            border-radius: 4px;
+        }
+
+        #shapeSpace {
+            max-width: 100%;
+            aspect-ratio: 3/1;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-height: 0;
+            min-width: 0;
+        }
+
+        .shapePlace {
+            flex: 1;
+            min-height: 0;
+            min-width: 0;
+            max-height: 100%;
+            aspect-ratio: 1/1;
+            display: grid;
+            place-items: center;
+        }
+
+        #topBar {
+            width: min(85vw, 50dvh);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        #highScore {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--accent);
+        }
+
+        #highScore #highScoreIcon {
+            aspect-ratio: 2/3;
+            height: 35px;
+            background: var(--accent);
+            mask: url("../assets/monster_blast/monster-logo.svg") center / contain no-repeat;
+        }
+
+        #highScore #highScoreVal {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        #score {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        /*Alles an Game css hier*/
+    }
+}
+
+@media(width < 800px) {
+    .gameWrapper #topBar {
+        justify-content: center;
+        flex-direction: column;
+        gap: 6px;
+    }
 }

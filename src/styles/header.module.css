@@ -1,11 +1,11 @@
 .header {
-  height: 70px;
+  height: var(--header-height);
   background-color: var(--card);
   color: var(--foreground);
   border-bottom: 1px solid var(--line);
   display: grid;
   grid-template-columns: 70px 1fr 70px;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--header-margin-bottom);
 }
 
 .logo {
