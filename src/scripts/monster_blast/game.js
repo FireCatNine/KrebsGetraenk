@@ -4,7 +4,7 @@ export default class Game {
     constructor(container) {
         this.container = container
         this.abortCon = new AbortController()
-        this.signal = this.abortCon.signal
+        this.abortSignal = this.abortCon.signal
         this.boardMatrix = Array.from({ length: 8 }, () => Array(8).fill(0))
 
         this.highScoreValEle = this.container.querySelector("#highScoreVal")
@@ -30,6 +30,8 @@ export default class Game {
         }
         
         this.fillUpShapes()
+
+
     }
 
     cleanup() {
@@ -43,7 +45,11 @@ export default class Game {
     fillUpShapes() {
         this.shapePlaceEles.forEach((place) => {
             if (place.innerHTML !== '') return
-            new Shape(place)
+            new Shape(place, this.abortSignal)
         })
+    }
+
+    syncHighScore() {
+        
     }
 }

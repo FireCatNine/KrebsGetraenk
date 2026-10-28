@@ -1,8 +1,9 @@
 import { SHAPE_DEFINITIONS, COLORS } from './shape_definitions'
 
 export default class Shape {
-    constructor(container, definition = null, color = null) { //Shape baut sich selbst im übergebenen container auf
+    constructor(container, abortSignal, definition = null, color = null) { //Shape baut sich selbst im übergebenen container auf
         this.container = container
+        this.abortSignal = abortSignal
         this.definition = definition
         this.color = color
         this.shape = Array.from({ length: 6 }, () => Array(6).fill(null))
