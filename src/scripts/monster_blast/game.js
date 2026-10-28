@@ -1,5 +1,4 @@
 import Shape from "./shape"
-import { SHAPE_DEFINITIONS, COLORS } from './shape_definitions'
 
 export default class Game {
     constructor(container) {
