@@ -1,46 +1,75 @@
 .monsterBlastContent {
-    padding: 20px 16px 48px;
+    box-sizing: border-box;
+    padding: 8px 16px 12px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    height: calc(var(--content-height) - 68px);
+    min-height: var(--content-height);
 
     .headline {
-      margin-bottom: 1rem;
+      margin-top: clamp(0px, 1.5dvh, 14px);
+      margin-bottom: clamp(2rem, 7dvh, 3.5rem);
       color: var(--foreground);
       flex-shrink: 0;
+      text-align: center;
     }
 
     .gameWrapper {
-        width: min(95vw, 80dvh);
+        width: min(95vw, 80dvh, 560px);
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 1.5rem;
-        gap: 1rem;
-        flex: 1;
+        padding: 0;
+        gap: 0.65rem;
+        flex: none;
         min-height: 0;
 
         #board {
-            width: auto;
-            max-height: 90vw;
+            width: min(85vw, 45dvh, 520px);
             aspect-ratio: 1/1;
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             grid-template-rows: repeat(8, 1fr);
             gap: 4px;
             padding: 4px;
+            box-sizing: border-box;
             background: var(--line);
             border-radius: 8px;
-            flex: 5;
+            flex: none;
             min-height: 0;
         }
 
         #board .cell {
             background: var(--card);
             border-radius: 4px;
+            transition: background-color 100ms ease, box-shadow 100ms ease;
+        }
+
+        #board .cell.blue { background-color: rgb(37, 147, 206); }
+        #board .cell.gold { background-color: rgb(245, 180, 26); }
+        #board .cell.green { background-color: rgb(111, 179, 56); }
+        #board .cell.mint { background-color: rgb(63, 206, 186); }
+        #board .cell.orange { background-color: rgb(196, 95, 23); }
+        #board .cell.pink { background-color: rgb(221, 72, 114); }
+        #board .cell.purple { background-color: rgb(99, 56, 136); }
+        #board .cell.red { background-color: rgb(180, 15, 31); }
+        #board .cell.white { background-color: rgb(229, 231, 230); }
+
+        #board .cell.preview {
+            background-color: var(--preview-color) !important;
+            opacity: 0.72;
+            transition: background-color 40ms ease, box-shadow 40ms ease;
+        }
+
+        #board .cell.preview-valid {
+            box-shadow: inset 0 0 0 2px var(--foreground);
+        }
+
+        #board .cell.loss-fill {
+            animation: monsterBlastFill 220ms ease-out both;
         }
 
         #topBar {
@@ -78,14 +107,15 @@
         }
 
         #shapeSpace {
+            width: 100%;
             max-width: 100%;
-            aspect-ratio: 3/1;
+            height: clamp(64px, 12dvh, 140px);
             display: flex;
             flex-direction: row;
             justify-content: center;
             align-items: center;
             gap: 12px;
-            flex: 2;
+            flex: none;
             min-height: 0;
             min-width: 0;
         }
@@ -105,13 +135,29 @@
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             box-sizing: border-box;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: grab;
+            will-change: left, top, width, height;
+
+            &.is-dragging,
+            &.is-restoring {
+                cursor: grabbing;
+            }
+
+            &.disabled {
+                pointer-events: none;
+                opacity: 0.4;
+            }
 
             .shapeBlock {
                 aspect-ratio: 1/1;
-                border: 1px solid var(--background);
+                border: 0;
 
                 &.active {
                     border-radius: 3px;
+                    border: 1px solid var(--background);
                 }
 
                 &.blue {
@@ -146,6 +192,20 @@
 
         /*Alles an Game css hier*/
     }
+
+}
+
+@keyframes monsterBlastFill {
+    from { transform: scale(0.35); opacity: 0.25; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@media(prefers-reduced-motion: reduce) {
+    .monsterBlastContent .gameWrapper #board .cell,
+    .monsterBlastContent .gameWrapper #board .cell.loss-fill {
+        animation-duration: 1ms;
+        transition-duration: 1ms;
+    }
 }
 
 @media(width < 800px) {
@@ -153,5 +213,64 @@
         justify-content: center;
         flex-direction: column;
         gap: 6px;
+    }
+}
+
+@media(height < 680px) {
+    .monsterBlastContent {
+        padding-top: 4px;
+        padding-bottom: 6px;
+
+        .headline {
+            margin-bottom: 1.25rem;
+            font-size: 1.25rem;
+        }
+
+        .gameWrapper {
+            gap: 0.35rem;
+
+            #board {
+                width: min(78vw, 40dvh, 520px);
+            }
+
+            #shapeSpace {
+                height: clamp(56px, 10dvh, 90px);
+            }
+
+            #highScore #highScoreIcon {
+                height: 24px;
+            }
+
+            #score {
+                font-size: 1.5rem;
+            }
+        }
+
+    }
+}
+
+@media(height < 500px) {
+    .monsterBlastContent {
+        .headline {
+            margin-bottom: 0.75rem;
+        }
+
+        .gameWrapper {
+            gap: 0.25rem;
+
+            #board {
+                width: min(76vw, 32dvh, calc(100dvh - 220px), 520px);
+            }
+
+            #topBar {
+                width: 100%;
+                flex-direction: row;
+                gap: 1rem;
+            }
+
+            #shapeSpace {
+                height: 48px;
+            }
+        }
     }
 }
