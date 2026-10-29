@@ -8,7 +8,7 @@ export default function MonsterBlast() {
     useEffect(() => {
         const game = new Game(gameWrapperRef.current) //äußerster wrapper fürs game
         game.init()
-        return () => game.cleanup() //cleanup func für global event listeners weil react die seite nie neulädt. Arrow func damit js den bezug zum game objekt nicht verliert.
+        return () => game.cleanup() //cleanup func für global event listeners, weil react die seite nie neulädt. Arrow func damit js den bezug zum game objekt nicht verliert.
     }, [])
 
     return(

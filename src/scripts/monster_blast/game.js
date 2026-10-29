@@ -5,7 +5,8 @@ export default class Game {
         this.container = container
         this.abortCon = new AbortController()
         this.abortSignal = this.abortCon.signal
-        this.boardMatrix = Array.from({ length: 8 }, () => Array(8).fill(0))
+        this.boardMatrix = Array.from({ length: 8 }, () => Array(8).fill(0)) //[Row][Column]
+        this.boardEleMatrix = Array.from({ length: 8 }, () => Array(8).fill(null))
 
         this.highScoreValEle = this.container.querySelector("#highScoreVal")
         this.scoreEle = this.container.querySelector("#score")
@@ -22,22 +23,20 @@ export default class Game {
         for (let i= 0; i< 64; i++){
             const cell= document.createElement("div");
             cell.className= "cell";
-            const col= i% 8;
             const row= Math.floor(i/ 8);
-            cell.dataset.col= col;
-            cell.dataset.row= row;
+            const col= i% 8;
+            this.boardEleMatrix[row][col]
             this.boardEle.appendChild(cell);
         }
         
+        //Load or create playable game state
         this.fillUpShapes()
-
-
     }
 
     cleanup() {
         this.abortCon.abort()
 
-        //Sollte nur in react-dev wichtig sein wegen StrictMode. "Sollte"
+        //Sollte nur in react-dev wichtig sein wegen StrictMode
         this.boardEle.innerHTML = ''
         this.shapePlaceEles.forEach((place) => place.innerHTML = '')
     }

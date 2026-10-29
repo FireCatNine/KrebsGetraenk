@@ -291,7 +291,13 @@ export const SHAPE_DEFINITIONS = [
 ];
 
 export const COLORS = [
-    "white",
-    "green"
-    //noch mehr
+    "blue",
+    "gold",
+    "green",
+    "mint",
+    "orange",
+    "pink",
+    "purple",
+    "red",
+    "white"
 ]
