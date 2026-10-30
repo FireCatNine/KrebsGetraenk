@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../styles/karl.css';
+// Mathe Dings zeigen-> LaTeX oder KaTeX für CSS
 
 export default function KarlChatbot() {
   const WORKER_URL= import.meta.env.VITE_KARL_WORKER_URL;
