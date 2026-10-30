@@ -29,6 +29,9 @@ export default function MonsterBlast() {
                     <div id='place2' className='shapePlace'></div>
                 </div>
             </div>
+            <p className='info'>Sieht schön aus, funktioniert aber nicht...</p>
+            <p className='info'>Stört dich? PRs sind kostenlos!</p>
+            <a className='infoLink' href="https://github.com/FireCatNine/KrebsGetraenk">GitHub</a>
         </div>
     )
 }

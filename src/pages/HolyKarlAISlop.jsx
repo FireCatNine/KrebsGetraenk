@@ -6,7 +6,6 @@ import { InlineMath, BlockMath } from 'react-katex';
 
 export default function KarlChatbot(){
   const WORKER_URL= "https://karl-bot.fox-gr.workers.dev/";
-
   const [messages, setMessages]= useState([
     { role: 'user', text: "Kaarl, da liegt ein toter Mensch in unserm Verlauf!" },
     { role: 'karl', text: "Ohh heey; wie kommt der denn hier rein?." },
