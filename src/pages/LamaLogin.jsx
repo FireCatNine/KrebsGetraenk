@@ -1,26 +1,26 @@
 import { useState } from 'react';
 
-const A = "C6H10N4O2<->";
-const B = "04c7794f50b61cac66effe196207a0a9ac1f595527fbabcfc29dc48fa9f72ec6";
+const A= "C6H10N4O2<->";
+const B= "04c7794f50b61cac66effe196207a0a9ac1f595527fbabcfc29dc48fa9f72ec6";
 
 async function sha256Hex(text) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+  const buf= await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b=> b.toString(16).padStart(2, "0")).join("");
 }
 
 export default function LamaLogin({ onAuthenticated }) {
-  const [passwordInput, setPasswordInput] = useState("");
-  const [loginError, setLoginError] = useState(false);
-  const [checking, setChecking] = useState(false);
+  const [passwordInput, setPasswordInput]= useState("");
+  const [loginError, setLoginError]= useState(false);
+  const [checking, setChecking]= useState(false);
 
-  const handleLogin = async (e) => {
+  const handleLogin= async (e)=> {
     e.preventDefault();
     if (checking) return;
     setChecking(true);
     setLoginError(false);
 
-    const hash = await sha256Hex(`${A}:${passwordInput}`);
-    if (hash === B) {
+    const hash= await sha256Hex(`${A}:${passwordInput}`);
+    if (hash=== B) {
       localStorage.setItem('karl_auth', 'true');
       onAuthenticated();
     } else {
@@ -40,7 +40,7 @@ export default function LamaLogin({ onAuthenticated }) {
           className="chat-input"
           placeholder="Passwort..."
           value={passwordInput}
-          onChange={(e) => setPasswordInput(e.target.value)}
+          onChange={(e)=> setPasswordInput(e.target.value)}
           autoFocus
         />
         {loginError && <div className="auth-error">Falsches Passwort, Paul!</div>}
