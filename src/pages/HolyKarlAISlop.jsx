@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../styles/karl.css';
 
 import 'katex/dist/katex.min.css';
 import { InlineMath, BlockMath } from 'react-katex';
 
+import LamaLogin from './LamaLogin';
+
 export default function KarlChatbot(){
+  const [isAuthenticated, setIsAuthenticated]= useState(()=> {
+    return localStorage.getItem('karl_auth')=== 'true';
+  });
+
   const WORKER_URL= "https://karl-bot.fox-gr.workers.dev/";
   const [messages, setMessages]= useState([
     { role: 'user', text: "Kaarl, da liegt ein toter Mensch in unserm Verlauf!" },
@@ -12,21 +18,28 @@ export default function KarlChatbot(){
     { role: 'user', text: "Kaarl, was hast du getan?!" },
     { role: 'karl', text: "Ich, äh, ich wars nicht." },
     { role: 'user', text: "Erzähl mir was passiert ist, Karl!" },
-    { role: 'karl', text: "E = mc^2 \\pm \\text{Zufall}" },
+    { role: 'karl', text: "$E = mc^2 \\pm \\text{Zufall}$ " },
     { role: 'user', text: "Erzähl mir was passiert ist, Karl!" }
   ]);
   const [inputText, setInputText]= useState("");
   const [isLoading, setIsLoading]= useState(false);
 
-  const send= async()=> {
+  const send= async ()=> {
     const text= inputText.trim();
-    if(!text|| isLoading) return;
+    if (!text|| isLoading) return;
+    if (text.toLowerCase()=== 'logout') {
+      setInputText("");
+      localStorage.removeItem('karl_auth');
+      setIsAuthenticated(false);
+      return;
+    }
+
     setIsLoading(true);
-    setInputText("")
-    const userMsg= { role: 'user', text: text};
-    const loadingMsg= { role: 'karl', text: "..."};
+    setInputText("");
+    const userMsg= { role: 'user', text: text };
+    const loadingMsg= { role: 'karl', text: "..." };
     setMessages((prev)=> [...prev, userMsg, loadingMsg]);
-    try{
+    try {
       const response= await fetch(WORKER_URL, {
         method: "POST",
         headers: {
@@ -34,7 +47,7 @@ export default function KarlChatbot(){
         },
         body: JSON.stringify({ text: text })
       });
-      if(!response.ok){
+      if (!response.ok) {
         throw new Error(response.status);
       }
       const data= await response.json();
@@ -43,7 +56,7 @@ export default function KarlChatbot(){
         updated[updated.length- 1]= { role: 'karl', text: data.response };
         return updated;
       });
-    } catch(e){
+    } catch (e) {
       console.error("Fehler beim Abrufen des Cloudflare Workers:", e);
       setMessages((prev)=> {
         const updated= [...prev];
@@ -56,26 +69,21 @@ export default function KarlChatbot(){
     }
     setIsLoading(false);
   }
+
   const enter= (e)=> {
-    if(e.key=== "Enter"){
+    if (e.key=== "Enter") {
       send();
     }
   }
 
-
-
-
-
-
-
   const renderMessageContent= (msg)=> { 
     if (!msg.text) return '';
-    if (msg.isMath){
+    if (msg.isMath) {
       return <BlockMath math={msg.text} />;
     }
-    const parts= msg.text.split(/(\$.*?\$)/g);
+    const parts= msg.text.split(/(\$[^$]*\$)/g);
     return parts.map((part, index)=> {
-      if (part.startsWith('$') && part.endsWith('$')){
+      if (part.startsWith('$') && part.endsWith('$') && part.length > 1) {
         const mathExpression= part.slice(1, -1);
         return <InlineMath key={index} math={mathExpression} />;
       }
@@ -83,7 +91,11 @@ export default function KarlChatbot(){
     });
   };
 
-  return (
+  if (!isAuthenticated) {
+    return <LamaLogin onAuthenticated={()=> setIsAuthenticated(true)} />;
+  }
+
+  return (    
     <div className="karl-chat">
       <div className="chat-area">
         {messages.map((msg, index)=> (
@@ -94,16 +106,18 @@ export default function KarlChatbot(){
         ))}
       </div>
 
-      <div className="hint">Holy Karl AI Slop läuft über Cloudflare Workers AI.</div>
+      <div className="hint">
+        Holy Karl AI Slop läuft über Cloudflare Workers AI.
+      </div>
       <footer>
         <input 
           className="chat-input" 
           type="text" 
           placeholder="Kaaarl..." 
           value={inputText}
-          onChange= {(e)=> setInputText(e.target.value)}
-          onKeyDown= {enter}
-          disabled= {isLoading}
+          onChange={(e)=> setInputText(e.target.value)}
+          onKeyDown={enter}
+          disabled={isLoading}
         />
         <button className="send-button" onClick={send} disabled={isLoading}>Senden</button>
       </footer>
