@@ -11,6 +11,12 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  scrollbar-width: none;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 .karl-chat .msg {
   max-width: 78%;

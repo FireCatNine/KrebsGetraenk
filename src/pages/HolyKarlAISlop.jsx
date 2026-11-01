@@ -19,7 +19,7 @@ export default function KarlChatbot(){
     { role: 'karl', text: "Ich, äh, ich wars nicht." },
     { role: 'user', text: "Erzähl mir was passiert ist, Karl!" },
     { role: 'karl', text: "$E = mc^2 \\pm \\text{Zufall}$ " },
-    { role: 'user', text: "Erzähl mir was passiert ist, Karl!" }
+    { role: 'user', text: "Erzähl mir was passiert ist, Karl!!" }
   ]);
   const [inputText, setInputText]= useState("");
   const [isLoading, setIsLoading]= useState(false);
