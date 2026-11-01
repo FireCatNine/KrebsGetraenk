@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import '../styles/karl.css';
 
 import 'katex/dist/katex.min.css';
@@ -14,7 +14,7 @@ export default function KarlChatbot(){
   const WORKER_URL= "https://karl-bot.fox-gr.workers.dev/";
   const [messages, setMessages]= useState([
     { role: 'user', text: "Kaarl, da liegt ein toter Mensch in unserm Verlauf!" },
-    { role: 'karl', text: "Ohh heey; wie kommt der denn hier rein?." },
+    { role: 'karl', text: "Ohh heey; wie kommt der denn hier rein?" },
     { role: 'user', text: "Kaarl, was hast du getan?!" },
     { role: 'karl', text: "Ich, äh, ich wars nicht." },
     { role: 'user', text: "Erzähl mir was passiert ist, Karl!" },
@@ -23,6 +23,12 @@ export default function KarlChatbot(){
   ]);
   const [inputText, setInputText]= useState("");
   const [isLoading, setIsLoading]= useState(false);
+
+  const chatAreaRef = useRef(null)
+
+    useEffect(() => {
+        if (chatAreaRef.current) chatAreaRef.current.scrollTo({top: chatAreaRef.current.scrollHeight, behavior: 'smooth'})
+    }, [messages])
 
   const send= async ()=> {
     const text= inputText.trim();
@@ -97,7 +103,7 @@ export default function KarlChatbot(){
 
   return (    
     <div className="karl-chat">
-      <div className="chat-area">
+      <div className="chat-area" ref={chatAreaRef}>
         {messages.map((msg, index)=> (
           <div key={index} className={`msg ${msg.role}`}>
             <div className="owner">{msg.role=== 'user' ? 'PAUL?' : 'KARL'}</div>
