@@ -13,11 +13,13 @@ export default function Header() {
 
     const toggleNavbar = () => setNavbarOpen(!navbarOpen)
 
+    const imageSrc = `${import.meta.env.BASE_URL}favicon.svg`
+
     return(
         <>
           <header className={styles.header}>
             <div className={styles.logo}>
-              <Link to='/'><img src="/favicon.svg" alt="Logo" /></Link>
+              <Link to='/'><img src={imageSrc} /></Link>
             </div>
             <div className={styles.headline}>
               <h1>MONSTER WALL</h1>
