@@ -31,7 +31,7 @@ export default function MonsterBlast() {
             </div>
             <p className='info'>Sieht schön aus, funktioniert aber nicht...</p>
             <p className='info'>Stört dich? PRs sind kostenlos!</p>
-            <a className='infoLink' href="https://github.com/FireCatNine/KrebsGetraenk">GitHub</a>
+            <a className='infoLink' href="https://github.com/FireCatNine/KrebsGetraenk" target='_blank' rel='noopener noreferrer'>GitHub</a>
         </div>
     )
 }

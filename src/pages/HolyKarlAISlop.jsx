@@ -4,7 +4,7 @@ import '../styles/karl.css';
 import 'katex/dist/katex.min.css';
 import { InlineMath, BlockMath } from 'react-katex';
 
-import LamaLogin from './LamaLogin';
+import LamaLogin from '../components/LamaLogin';
 
 export default function KarlChatbot(){
   const [isAuthenticated, setIsAuthenticated]= useState(()=> {
