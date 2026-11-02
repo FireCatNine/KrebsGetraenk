@@ -4,6 +4,38 @@ import { COLORS, SHAPE_DEFINITIONS } from "./shape_definitions"
 const BOARD_SIZE = 8
 const STORAGE_KEY = "monster-blast-save"
 const RESTORE_DURATION = 360
+const EPIC_CLEAR_DURATION = 3200
+const LEGENDARY_CLEAR_DURATION = 5600
+const OVERLAY_CLEANUP_DELAY = 200
+const EPIC_CLEAR_EFFECT = { className: "line-clear-epic", animationName: "monsterBlastLineClearEpic" }
+const LEGENDARY_CLEAR_EFFECT = { className: "line-clear-legendary", animationName: "monsterBlastLineClearLegendary" }
+const QUICK_LEGENDARY_CLEAR_EFFECT = {
+    className: "line-clear-legendary-quick",
+    animationName: "monsterBlastLineClearLegendaryQuick",
+}
+const LINE_CLEAR_EFFECTS = [
+    { className: "line-clear-implode", animationName: "monsterBlastLineClearImplode" },
+    { className: "line-clear-slice", animationName: "monsterBlastLineClearSlice" },
+    QUICK_LEGENDARY_CLEAR_EFFECT,
+]
+const EPIC_CLEAR_PALETTES = [
+    { primary: "#b6ff00", secondary: "#00ffc8" },
+    { primary: "#ff3d8d", secondary: "#ffb000" },
+    { primary: "#30a8ff", secondary: "#d8ff3e" },
+    { primary: "#c56bff", secondary: "#ff5a36" },
+]
+const EPIC_CLEAR_THRESHOLD = 2
+const EPIC_CLEAR_MESSAGES = [
+    "WIESO NICHT?",
+    "WER NIE ANFÄNGT WIRD AUCH NIE FERTIG",
+    "FRAGEN ODER ANTWORTEN?"
+]
+const LEGENDARY_CLEAR_THRESHOLD = 3
+const LEGENDARY_CLEAR_MESSAGES = [
+    "DIE X-ACHSE",
+    "KREBS-GETRÄNK",
+    "FRISCHLUFT-SCHNEISE"
+]
 const EMPTY_BOARD = () => Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(null))
 
 export default class Game {
@@ -16,6 +48,7 @@ export default class Game {
         this.shapeInstances = [null, null, null]
         this.restoreTimers = new Set()
         this.fillingTimers = new Set()
+        this.counterTimers = new Map()
         this.activeDrag = null
         this.previewFrame = null
         this.previewPoint = null
@@ -23,6 +56,10 @@ export default class Game {
         this.highScore = 0
         this.gameOver = false
         this.isFillingBoard = false
+        this.isResolvingTurn = false
+        this.lastLineClearEffectIndex = -1
+        this.epicClearTimer = null
+        this.epicClearOverlay = null
 
         this.highScoreValEle = this.container.querySelector("#highScoreVal")
         this.scoreEle = this.container.querySelector("#score")
@@ -79,6 +116,11 @@ export default class Game {
         this.cancelDrag(false)
         this.restoreTimers.forEach((timer) => window.clearTimeout(timer))
         this.fillingTimers.forEach((timer) => window.clearTimeout(timer))
+        this.counterTimers.forEach((timer) => window.clearTimeout(timer))
+        this.counterTimers.clear()
+        if (this.epicClearTimer !== null) window.clearTimeout(this.epicClearTimer)
+        this.epicClearTimer = null
+        this.clearEpicClearOverlay()
         this.restoreTimers.clear()
         this.fillingTimers.clear()
         if (this.previewFrame !== null) window.cancelAnimationFrame(this.previewFrame)
@@ -165,15 +207,23 @@ export default class Game {
 
     createShape(index, definitionIndex = null, color = null) {
         this.shapePlaceEles[index].querySelector(".shape-slot-placeholder")?.remove()
-        const definition = definitionIndex === null ? null : SHAPE_DEFINITIONS[definitionIndex]
-        const shape = new Shape(this.shapePlaceEles[index], this.abortSignal, definition, color)
-        shape.definitionIndex = definitionIndex === null
-            ? SHAPE_DEFINITIONS.indexOf(shape.definition)
-            : definitionIndex
+        const selectedDefinitionIndex = definitionIndex ?? this.selectShapeDefinition()
+        const selectedColor = color ?? this.selectShapeColor()
+        const definition = SHAPE_DEFINITIONS[selectedDefinitionIndex]
+        const shape = new Shape(this.shapePlaceEles[index], this.abortSignal, definition, selectedColor)
+        shape.definitionIndex = selectedDefinitionIndex
         this.shapeInstances[index] = shape
         shape.shapeEle.addEventListener("pointerdown", (event) => this.startDrag(event, index), {
             signal: this.abortSignal,
         })
+    }
+
+    selectShapeDefinition() { //Wählt die nächsten Shapes aus
+        return Math.floor(Math.random() * SHAPE_DEFINITIONS.length)
+    }
+
+    selectShapeColor() {
+        return COLORS[Math.floor(Math.random() * COLORS.length)]
     }
 
     setDragGeometry(element, rect) {
@@ -184,7 +234,7 @@ export default class Game {
     }
 
     startDrag(event, index) {
-        if (this.gameOver || this.isFillingBoard || this.activeDrag || event.button !== 0) return
+        if (this.gameOver || this.isFillingBoard || this.isResolvingTurn || this.activeDrag || event.button !== 0) return
         const shape = this.shapeInstances[index]
         if (!shape || shape.shapeEle.classList.contains("is-restoring")) return
         event.preventDefault()
@@ -363,7 +413,8 @@ export default class Game {
     showPreviewCell(row, col, color, valid) {
         const cell = this.boardEleMatrix[row][col]
         cell.classList.add("preview")
-        if (valid) cell.classList.add("preview-valid")
+        cell.classList.toggle("preview-valid", valid)
+        cell.classList.toggle("preview-clear", !valid)
         cell.style.setProperty("--preview-color", this.getColorValue(color))
     }
 
@@ -433,57 +484,157 @@ export default class Game {
         if (this.previewFrame !== null) window.cancelAnimationFrame(this.previewFrame)
         this.previewFrame = null
         this.boardEle.querySelectorAll(".preview").forEach((cell) => {
-            cell.classList.remove("preview", "preview-valid")
+            cell.classList.remove("preview", "preview-valid", "preview-clear")
             cell.style.removeProperty("--preview-color")
         })
     }
 
-    placeShape(drag) {
+    async placeShape(drag) {
         const placement = drag.placement
         if (!placement) {
             this.cancelDrag()
             return
         }
-        this.clearPreview()
-        const { row, col } = placement
-        drag.shape.definition.forEach((shapeRow, shapeRowIndex) => {
-            shapeRow.forEach((filled, shapeColIndex) => {
-                if (filled) this.boardMatrix[row + shapeRowIndex][col + shapeColIndex] = drag.shape.color
+        this.isResolvingTurn = true
+        try {
+            this.clearPreview()
+            const { row, col } = placement
+            drag.shape.definition.forEach((shapeRow, shapeRowIndex) => {
+                shapeRow.forEach((filled, shapeColIndex) => {
+                    if (filled) this.boardMatrix[row + shapeRowIndex][col + shapeColIndex] = drag.shape.color
+                })
             })
-        })
 
-        this.shapeInstances[drag.index] = null
-        drag.shapeElement.remove()
-        this.resetDragElement(drag.shapeElement)
-        this.activeDrag = null
-        document.body.classList.remove("noScroll")
+            this.shapeInstances[drag.index] = null
+            drag.shapeElement.remove()
+            this.resetDragElement(drag.shapeElement)
+            this.activeDrag = null
+            document.body.classList.remove("noScroll")
 
-        this.score += drag.shape.definition.flat().filter(Boolean).length
-        this.clearCompletedLines()
-        this.updateHighScore()
-        this.renderBoard()
+            const completedLines = this.getCompletedLines()
+            const lineCells = this.getLineClearCells(completedLines)
+            this.addScore(this.calculateTurnScore(drag.shape, completedLines))
+            this.renderBoard()
+            if (lineCells.length) this.clearCompletedLines(completedLines)
 
-        if (this.shapeInstances.every((shape) => shape === null)) this.fillUpShapes()
-        this.saveState()
-        if (!this.hasAnyValidMove()) this.endGame()
+            if (this.shapeInstances.every((shape) => shape === null)) this.fillUpShapes()
+            this.saveState()
+            if (lineCells.length) {
+                await this.animateLineClear(lineCells, completedLines.rows.length + completedLines.cols.length)
+                this.renderBoard()
+            }
+            if (!this.hasAnyValidMove()) this.endGame()
+        } finally {
+            this.isResolvingTurn = false
+        }
     }
 
-    clearCompletedLines() {
-        const { rows: fullRows, cols: fullCols } = this.getCompletedLines()
-        if (!fullRows.length && !fullCols.length) return
+    calculateTurnScore(shape, lines) { //Berechnet Score aus platzierter Shape und zerstörten Linien
+        const placedBlockPoints = shape.definition.flat().filter(Boolean).length
+        const clearedLinePoints = (lines.rows.length + lines.cols.length) * 10
+        return placedBlockPoints + clearedLinePoints
+    }
 
+    addScore(points) {
+        this.score += points
+        this.updateHighScore()
+    }
+
+    getLineClearCells({ rows, cols }) {
         const clearedCells = new Set()
-        fullRows.forEach((row) => {
+        rows.forEach((row) => {
             for (let col = 0; col < BOARD_SIZE; col++) clearedCells.add(`${row}:${col}`)
         })
-        fullCols.forEach((col) => {
+        cols.forEach((col) => {
             for (let row = 0; row < BOARD_SIZE; row++) clearedCells.add(`${row}:${col}`)
         })
+        return Array.from(clearedCells, (position) => position.split(":").map(Number))
+    }
+
+    clearCompletedLines({ rows, cols }) {
+        const clearedCells = this.getLineClearCells({ rows, cols })
         clearedCells.forEach((position) => {
-            const [row, col] = position.split(":").map(Number)
+            const [row, col] = position
             this.boardMatrix[row][col] = null
         })
-        this.score += (fullRows.length + fullCols.length) * 10
+    }
+
+    animateLineClear(cells, lineCount) {
+        const center = (BOARD_SIZE - 1) / 2
+        const effect = this.chooseLineClearEffect(lineCount)
+        if (lineCount >= LEGENDARY_CLEAR_THRESHOLD) this.playEpicClearOverlay(true)
+        else if (lineCount >= EPIC_CLEAR_THRESHOLD) this.playEpicClearOverlay()
+
+        return Promise.all(cells.map(([row, col]) => new Promise((resolve) => {
+            const cell = this.boardEleMatrix[row][col]
+            let fallbackTimer
+            const finish = (event) => {
+                if (event && event.animationName !== effect.animationName) return
+                window.clearTimeout(fallbackTimer)
+                cell.removeEventListener("animationend", finish)
+                cell.removeEventListener("animationcancel", finish)
+                cell.classList.remove(...COLORS)
+                cell.classList.remove("line-clearing", effect.className)
+                cell.style.removeProperty("--line-clear-delay")
+                resolve()
+            }
+            const distance = Math.abs(row - center) + Math.abs(col - center)
+            const delay = effect === LEGENDARY_CLEAR_EFFECT
+                ? Math.round(distance * 18)
+                : effect === EPIC_CLEAR_EFFECT
+                    ? Math.round(distance * 4)
+                    : Math.round(distance * 10)
+            cell.style.setProperty("--line-clear-delay", `${delay}ms`)
+            cell.addEventListener("animationend", finish)
+            cell.addEventListener("animationcancel", finish)
+            cell.classList.add("line-clearing", effect.className)
+            const animationTimeout = effect === LEGENDARY_CLEAR_EFFECT
+                ? 2400
+                : effect === QUICK_LEGENDARY_CLEAR_EFFECT ? 1200 : 900
+            fallbackTimer = window.setTimeout(() => finish(), animationTimeout)
+        })))
+    }
+
+    chooseLineClearEffect(lineCount) {
+        if (lineCount >= LEGENDARY_CLEAR_THRESHOLD) return LEGENDARY_CLEAR_EFFECT
+        if (lineCount >= EPIC_CLEAR_THRESHOLD) return EPIC_CLEAR_EFFECT
+
+        const availableIndexes = LINE_CLEAR_EFFECTS
+            .map((_, index) => index)
+            .filter((index) => index !== this.lastLineClearEffectIndex)
+        const effectIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)]
+        this.lastLineClearEffectIndex = effectIndex
+        return LINE_CLEAR_EFFECTS[effectIndex]
+    }
+
+    playEpicClearOverlay(isLegendary = false) {
+        this.clearEpicClearOverlay()
+        const palette = EPIC_CLEAR_PALETTES[Math.floor(Math.random() * EPIC_CLEAR_PALETTES.length)]
+        const messages = isLegendary ? LEGENDARY_CLEAR_MESSAGES : EPIC_CLEAR_MESSAGES
+        const message = messages[Math.floor(Math.random() * messages.length)]
+        const overlay = document.createElement("div")
+        overlay.className = `epic-clear-overlay${isLegendary ? " legendary-clear" : ""}`
+        overlay.style.setProperty("--epic-primary", palette.primary)
+        overlay.style.setProperty("--epic-secondary", palette.secondary)
+        const title = document.createElement("div")
+        title.className = "epic-clear-message"
+        title.textContent = message
+        overlay.appendChild(title)
+        this.container.appendChild(overlay)
+        this.epicClearOverlay = overlay
+        this.boardEle.classList.add("epic-clear")
+        this.epicClearTimer = window.setTimeout(() => {
+            this.clearEpicClearOverlay()
+            this.epicClearTimer = null
+        }, (isLegendary ? LEGENDARY_CLEAR_DURATION : EPIC_CLEAR_DURATION) + OVERLAY_CLEANUP_DELAY)
+    }
+
+    clearEpicClearOverlay() {
+        if (this.epicClearTimer !== null) window.clearTimeout(this.epicClearTimer)
+        this.epicClearTimer = null
+        this.epicClearOverlay?.remove()
+        this.epicClearOverlay = null
+        this.boardEle.classList.remove("epic-clear")
     }
 
     getCompletedLines(board = this.boardMatrix) {
@@ -612,21 +763,52 @@ export default class Game {
     }
 
     updateHighScore() {
+        const previousHighScore = this.highScore
         this.highScore = Math.max(this.highScore, this.score)
-        this.updateScoreDisplay()
+        const displayedScore = Number.parseInt(this.scoreEle.textContent, 10) || 0
+        this.animateCounter(this.scoreEle, displayedScore, this.score)
+        if (this.highScore !== previousHighScore) {
+            this.animateCounter(this.highScoreValEle, previousHighScore, this.highScore)
+        }
     }
 
     updateScoreDisplay() {
+        this.counterTimers.forEach((timer) => window.clearTimeout(timer))
+        this.counterTimers.clear()
         this.scoreEle.textContent = this.score
         this.highScoreValEle.textContent = this.highScore
+    }
+
+    animateCounter(element, from, to) {
+        const previousTimer = this.counterTimers.get(element)
+        if (previousTimer !== undefined) window.clearTimeout(previousTimer)
+        if (from === to || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            element.textContent = to
+            this.counterTimers.delete(element)
+            return
+        }
+
+        const direction = Math.sign(to - from)
+        const stepDuration = Math.max(16, Math.min(140, 420 / Math.abs(to - from)))
+        const update = () => {
+            from += direction
+            element.textContent = from
+            if (from === to) {
+                this.counterTimers.delete(element)
+                return
+            }
+            this.counterTimers.set(element, window.setTimeout(update, stepDuration))
+        }
+        this.counterTimers.set(element, window.setTimeout(update, stepDuration))
     }
 
     renderBoard() {
         this.boardMatrix.forEach((row, rowIndex) => {
             row.forEach((color, colIndex) => {
                 const cell = this.boardEleMatrix[rowIndex][colIndex]
-                cell.classList.remove(...COLORS, "preview", "preview-valid", "loss-fill")
+                cell.classList.remove(...COLORS, "preview", "preview-valid", "preview-clear", "loss-fill", "line-clearing")
                 cell.style.removeProperty("--preview-color")
+                cell.style.removeProperty("--line-clear-delay")
                 if (color) cell.classList.add(color)
             })
         })
