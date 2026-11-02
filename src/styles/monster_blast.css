@@ -2,7 +2,7 @@
     padding: 20px 16px 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     height: calc(var(--content-height) - 40px);
 
@@ -10,6 +10,7 @@
       margin-bottom: 1rem;
       color: var(--foreground);
       flex-shrink: 0;
+      text-align: center;
     }
 
     .info {
@@ -26,13 +27,15 @@
     }
 
     .gameWrapper {
+        --cell-radius: 4px;
         width: min(95vw, 80dvh);
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 1.5rem;
-        gap: 1rem;
+        padding: 0;
+        gap: 0.65rem;
         flex: 1;
         min-height: 0;
 
@@ -45,6 +48,7 @@
             grid-template-rows: repeat(8, 1fr);
             gap: 4px;
             padding: 4px;
+            box-sizing: border-box;
             background: var(--line);
             border-radius: 8px;
             flex: 5;
@@ -53,7 +57,171 @@
 
         #board .cell {
             background: var(--card);
-            border-radius: 4px;
+            border-radius: var(--cell-radius);
+            transition: none;
+        }
+
+        #board .cell.blue { background-color: rgb(37, 147, 206); }
+        #board .cell.gold { background-color: rgb(245, 180, 26); }
+        #board .cell.green { background-color: rgb(111, 179, 56); }
+        #board .cell.mint { background-color: rgb(63, 206, 186); }
+        #board .cell.orange { background-color: rgb(196, 95, 23); }
+        #board .cell.pink { background-color: rgb(221, 72, 114); }
+        #board .cell.purple { background-color: rgb(99, 56, 136); }
+        #board .cell.red { background-color: rgb(180, 15, 31); }
+        #board .cell.white { background-color: rgb(229, 231, 230); }
+
+        #board .cell.preview {
+            background-color: var(--preview-color) !important;
+            opacity: 0.72;
+        }
+
+        #board .cell.preview-valid {
+            box-shadow: inset 0 0 0 2px var(--foreground);
+        }
+
+        #board .cell.preview-clear {
+            opacity: 0.82;
+            box-shadow: inset 0 0 0 1px var(--preview-color);
+        }
+
+        #board .cell.loss-fill {
+            animation: monsterBlastFill 220ms ease-out both;
+        }
+
+        #board .cell.line-clearing {
+            position: relative;
+            z-index: 1;
+            animation-duration: 480ms;
+            animation-delay: var(--line-clear-delay, 0ms);
+            animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+            animation-fill-mode: both;
+
+            &::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                overflow: clip;
+                opacity: 0;
+                background:
+                    radial-gradient(circle, #fff 0 1.5px, transparent 2px) 15% 20% / 8px 8px,
+                    radial-gradient(circle, #b6ff00 0 2px, transparent 2.5px) 80% 18% / 9px 9px,
+                    radial-gradient(circle, #fff 0 1.5px, transparent 2px) 75% 82% / 8px 8px,
+                    radial-gradient(circle, #4dffcf 0 2px, transparent 2.5px) 22% 78% / 9px 9px;
+                animation: monsterBlastSparks 480ms ease-out var(--line-clear-delay, 0ms) both;
+            }
+        }
+
+        #board .cell.line-clearing.line-clear-implode {
+            animation-name: monsterBlastLineClearImplode;
+        }
+
+        #board .cell.line-clearing.line-clear-slice {
+            animation-name: monsterBlastLineClearSlice;
+        }
+
+        #board .cell.line-clearing.line-clear-epic {
+            animation-name: monsterBlastLineClearEpic;
+            animation-duration: 720ms;
+        }
+
+        #board .cell.line-clearing.line-clear-legendary {
+            animation-name: monsterBlastLineClearLegendary;
+            animation-duration: 1600ms;
+        }
+
+        #board .cell.line-clearing.line-clear-legendary-quick {
+            animation-name: monsterBlastLineClearLegendaryQuick;
+            animation-duration: 800ms;
+        }
+
+        #board.epic-clear {
+            overflow: clip;
+        }
+
+        .epic-clear-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            pointer-events: none;
+            display: grid;
+            place-items: center;
+            overflow: clip;
+            box-sizing: border-box;
+            background: radial-gradient(
+                circle at center,
+                color-mix(in srgb, var(--epic-primary, #b6ff00) 88%, transparent) 0%,
+                color-mix(in srgb, var(--epic-secondary, #00ffc8) 62%, transparent) 18%,
+                rgb(14 18 10 / 86%) 58%,
+                transparent 100%
+            );
+            animation: monsterBlastEpicFlash 3200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+
+            &::after {
+                content: "";
+                position: absolute;
+                inset: -100vmax;
+                overflow: clip;
+                background: repeating-conic-gradient(
+                    from 0deg,
+                    rgb(255 255 255 / 0%) 0deg 7deg,
+                    color-mix(in srgb, var(--epic-primary, #b6ff00) 72%, transparent) 8deg 9deg,
+                    color-mix(in srgb, var(--epic-secondary, #00ffc8) 62%, transparent) 10deg 11deg,
+                    rgb(255 255 255 / 0%) 12deg 20deg
+                );
+                animation: monsterBlastEpicRays 3200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+        }
+
+        .epic-clear-overlay.legendary-clear {
+            background:
+                radial-gradient(circle at center, #fff 0%, color-mix(in srgb, var(--epic-primary) 84%, transparent) 10%, transparent 42%),
+                radial-gradient(circle at center, color-mix(in srgb, var(--epic-secondary) 70%, transparent), rgb(8 10 18 / 94%) 72%);
+            animation: monsterBlastLegendaryFlash 5600ms ease-in-out both;
+
+            &::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    radial-gradient(ellipse at 12% 24%, color-mix(in srgb, var(--epic-primary) 78%, transparent), transparent 42%),
+                    radial-gradient(ellipse at 82% 18%, color-mix(in srgb, var(--epic-secondary) 82%, transparent), transparent 38%),
+                    radial-gradient(ellipse at 72% 78%, color-mix(in srgb, var(--epic-primary) 72%, transparent), transparent 44%),
+                    radial-gradient(ellipse at 24% 82%, color-mix(in srgb, var(--epic-secondary) 76%, transparent), transparent 40%),
+                    linear-gradient(115deg, transparent 20%, color-mix(in srgb, var(--epic-primary) 48%, transparent) 48%, transparent 70%);
+                opacity: 0;
+                animation: monsterBlastLegendaryFlashes 5600ms ease-in-out both;
+            }
+
+            &::after {
+                animation-name: monsterBlastLegendaryRays;
+                animation-duration: 5600ms;
+            }
+        }
+
+        .epic-clear-message {
+            position: relative;
+            z-index: 1;
+            max-width: 100%;
+            padding: 1rem;
+            box-sizing: border-box;
+            color: #fff;
+            font-size: clamp(3rem, 12vw, 9rem);
+            font-weight: 1000;
+            font-style: italic;
+            letter-spacing: 0.08em;
+            text-align: center;
+            overflow-wrap: anywhere;
+            text-shadow:
+                0 0 12px #fff,
+                0 0 36px var(--epic-primary, #b6ff00),
+                0 0 80px var(--epic-secondary, #00ffc8);
+        }
+
+        #score,
+        #highScoreVal {
+            font-variant-numeric: tabular-nums;
         }
 
         #topBar {
@@ -111,6 +279,11 @@
             aspect-ratio: 1/1;
         }
 
+        .shape.shape-slot-placeholder {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
         .shape {
             aspect-ratio: 1/1;
             height: 100%;
@@ -118,13 +291,29 @@
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             box-sizing: border-box;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: grab;
+            will-change: left, top, width, height;
+
+            &.is-dragging,
+            &.is-restoring {
+                cursor: grabbing;
+            }
+
+            &.disabled {
+                pointer-events: none;
+                opacity: 0.4;
+            }
 
             .shapeBlock {
                 aspect-ratio: 1/1;
-                border: 1px solid var(--background);
+                border: 0;
 
                 &.active {
-                    border-radius: 3px;
+                    border-radius: var(--cell-radius);
+                    border: 1px solid var(--background);
                 }
 
                 &.blue {
@@ -157,14 +346,167 @@
             }
         }
 
-        /*Alles an Game css hier*/
+        .shape.drag-placeholder {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .shape.is-dragging, .shape.is-restoring {
+            position: fixed;
+            left: var(--drag-left);
+            top: var(--drag-top);
+            width: var(--drag-width);
+            height: var(--drag-height);
+            z-index: 1000;
+            pointer-events: none;
+            box-sizing: border-box;
+            will-change: left, top, width, height, padding, transform;
+        }
+
+        .shape.is-dragging {
+            padding: 0 !important;
+            transition: none;
+            transform-origin: var(--drag-anchor-x) var(--drag-anchor-y);
+            transform: scale(var(--drag-scale-x, 1), var(--drag-scale-y, 1));
+        }
+
+        .shape.is-dragging.is-scaling-up {
+            transition: transform 180ms ease;
+            transform: scale(1);
+        }
+
+        .shape.is-restoring {
+            padding: var(--drag-padding) !important;
+            transition:
+                left 360ms ease,
+                top 360ms ease,
+                width 360ms ease,
+                height 360ms ease,
+                padding 360ms ease,
+                transform 360ms ease;
+            transform: none;
+        }
+
+
     }
 }
 
-@media(width < 800px) {
-    .gameWrapper #topBar {
-        justify-content: center;
-        flex-direction: column;
-        gap: 6px;
+@keyframes monsterBlastFill {
+    from { transform: scale(0.35); opacity: 0.25; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes monsterBlastLineClearImplode {
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+        opacity: 1;
+    }
+    35% {
+        transform: scale(1.12);
+        filter: brightness(1.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.18);
+        filter: brightness(2.2);
+        opacity: 0;
+    }
+}
+
+@keyframes monsterBlastLineClearSlice {
+    0% { transform: scale(1); filter: brightness(1); opacity: 1; }
+    24% { transform: scale(1.15, 0.72); filter: brightness(2.2); opacity: 1; }
+    55% { transform: scale(0.9, 1.12); filter: brightness(1.7) saturate(1.8); opacity: 0.9; }
+    100% { transform: scale(1.35, 0.04); filter: brightness(2.4); opacity: 0; }
+}
+
+@keyframes monsterBlastSparks {
+    0%, 15% { opacity: 0; transform: scale(0.35); }
+    35% { opacity: 1; }
+    100% { opacity: 0; transform: scale(1.8) rotate(24deg); }
+}
+
+@keyframes monsterBlastLineClearEpic {
+    0% { transform: scale(1); filter: brightness(1); opacity: 1; }
+    22% { transform: scale(1.45) rotate(8deg); filter: brightness(3) saturate(2); opacity: 1; }
+    48% { transform: scale(0.65) rotate(-12deg); filter: brightness(2.5) hue-rotate(70deg); opacity: 1; }
+    100% { transform: scale(2.2) rotate(24deg); filter: brightness(4) saturate(0); opacity: 0; }
+}
+
+@keyframes monsterBlastEpicFlash {
+    0% { opacity: 0; clip-path: circle(0 at center); }
+    10% { opacity: 1; clip-path: circle(70% at center); }
+    20% { opacity: 0.82; clip-path: circle(120% at center); }
+    32% { opacity: 1; }
+    100% { opacity: 0; clip-path: circle(150% at center); }
+}
+
+@keyframes monsterBlastEpicRays {
+    0% { opacity: 0; transform: rotate(0deg); }
+    12% { opacity: 0.82; }
+    88% { opacity: 0.68; }
+    100% { opacity: 0; transform: rotate(360deg); }
+}
+
+@keyframes monsterBlastLineClearLegendary {
+    0% { transform: scale(1); filter: brightness(1); opacity: 1; }
+    18% { transform: scale(1.7) rotate(12deg); filter: brightness(4) saturate(3); opacity: 1; }
+    42% { transform: scale(0.5) rotate(-18deg); filter: brightness(3) hue-rotate(110deg); opacity: 1; }
+    72% { transform: scale(2.4) rotate(24deg); filter: brightness(5) saturate(0); opacity: 0.9; }
+    100% { transform: scale(0.1) rotate(45deg); filter: brightness(2); opacity: 0; }
+}
+
+@keyframes monsterBlastLineClearLegendaryQuick {
+    0% { transform: scale(1); filter: brightness(1); opacity: 1; }
+    18% { transform: scale(1.7) rotate(12deg); filter: brightness(4) saturate(3); opacity: 1; }
+    42% { transform: scale(0.5) rotate(-18deg); filter: brightness(3) hue-rotate(110deg); opacity: 1; }
+    72% { transform: scale(1.8) rotate(24deg); filter: brightness(5) saturate(0); opacity: 0.9; }
+    100% { transform: scale(0.1) rotate(45deg); filter: brightness(2); opacity: 0; }
+}
+
+@keyframes monsterBlastLegendaryFlash {
+    0% { opacity: 0; clip-path: circle(0 at center); }
+    8% { opacity: 1; clip-path: circle(55% at center); }
+    18% { opacity: 0.72; clip-path: circle(140% at center); }
+    28%, 42% { opacity: 1; }
+    58% { opacity: 0.62; }
+    70% { opacity: 0.92; }
+    100% { opacity: 0; clip-path: circle(160% at center); }
+}
+
+@keyframes monsterBlastLegendaryRays {
+    0% { opacity: 0; transform: rotate(0deg) scale(0.7); }
+    10% { opacity: 1; }
+    78% { opacity: 0.85; transform: rotate(720deg) scale(1); }
+    100% { opacity: 0; transform: rotate(900deg) scale(1.08); }
+}
+
+@keyframes monsterBlastLegendaryFlashes {
+    0%, 100% { opacity: 0; }
+    8% { opacity: 0.92; }
+    14% { opacity: 0.18; }
+    24% { opacity: 0.82; }
+    31% { opacity: 0.12; }
+    43% { opacity: 0.96; }
+    51% { opacity: 0.24; }
+    63% { opacity: 0.84; }
+    71% { opacity: 0.08; }
+    82% { opacity: 0.72; }
+    90% { opacity: 0.16; }
+}
+
+@media(prefers-reduced-motion: reduce) {
+    .monsterBlastContent .gameWrapper #board .cell.line-clearing {
+        animation-duration: 1ms;
+        animation-delay: 0ms;
+    }
+
+    .monsterBlastContent .gameWrapper #board .cell.line-clearing::after,
+    .monsterBlastContent .gameWrapper .epic-clear-overlay,
+    .monsterBlastContent .gameWrapper .epic-clear-overlay::before,
+    .monsterBlastContent .gameWrapper .epic-clear-overlay::after {
+        animation-duration: 1ms;
+        animation-delay: 0ms;
     }
 }
