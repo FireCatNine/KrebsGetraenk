@@ -13,19 +13,6 @@
       text-align: center;
     }
 
-    .info {
-        font-size: 0.8rem;
-        color: var(--foreground);
-        flex-shrink: 0;
-    }
-
-    .infoLink {
-        font-size: 0.8rem;
-        color: var(--accent);
-        text-decoration: none;
-        flex-shrink: 0;
-    }
-
     .gameWrapper {
         --cell-radius: 4px;
         width: min(95vw, 80dvh);
@@ -178,7 +165,7 @@
             background:
                 radial-gradient(circle at center, #fff 0%, color-mix(in srgb, var(--epic-primary) 84%, transparent) 10%, transparent 42%),
                 radial-gradient(circle at center, color-mix(in srgb, var(--epic-secondary) 70%, transparent), rgb(8 10 18 / 94%) 72%);
-            animation: monsterBlastLegendaryFlash 5600ms ease-in-out both;
+            animation: monsterBlastLegendaryFlash 2500ms ease-in-out both;
 
             &::before {
                 content: "";
@@ -191,12 +178,12 @@
                     radial-gradient(ellipse at 24% 82%, color-mix(in srgb, var(--epic-secondary) 76%, transparent), transparent 40%),
                     linear-gradient(115deg, transparent 20%, color-mix(in srgb, var(--epic-primary) 48%, transparent) 48%, transparent 70%);
                 opacity: 0;
-                animation: monsterBlastLegendaryFlashes 5600ms ease-in-out both;
+                animation: monsterBlastLegendaryFlashes 2500ms ease-in-out both;
             }
 
             &::after {
                 animation-name: monsterBlastLegendaryRays;
-                animation-duration: 5600ms;
+                animation-duration: 2500ms;
             }
         }
 
