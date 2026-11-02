@@ -1,6 +1,6 @@
 .monsterBlastContent {
     box-sizing: border-box;
-    padding: 8px 16px 12px;
+    padding: 20px 16px 20px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -8,15 +8,14 @@
     min-height: var(--content-height);
 
     .headline {
-      margin-top: clamp(0px, 1.5dvh, 14px);
-      margin-bottom: clamp(2rem, 7dvh, 3.5rem);
+      margin-bottom: 1rem;
       color: var(--foreground);
       flex-shrink: 0;
       text-align: center;
     }
 
     .gameWrapper {
-        width: min(95vw, 80dvh, 560px);
+        width: min(95vw, 80dvh);
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
@@ -24,11 +23,12 @@
         align-items: center;
         padding: 0;
         gap: 0.65rem;
-        flex: none;
+        flex: 1;
         min-height: 0;
 
         #board {
-            width: min(85vw, 45dvh, 520px);
+            width: auto;
+            max-height: 90vw;
             aspect-ratio: 1/1;
             display: grid;
             grid-template-columns: repeat(8, 1fr);
@@ -38,14 +38,14 @@
             box-sizing: border-box;
             background: var(--line);
             border-radius: 8px;
-            flex: none;
+            flex: 5;
             min-height: 0;
         }
 
         #board .cell {
             background: var(--card);
             border-radius: 4px;
-            transition: background-color 100ms ease, box-shadow 100ms ease;
+            transition: none;
         }
 
         #board .cell.blue { background-color: rgb(37, 147, 206); }
@@ -61,7 +61,6 @@
         #board .cell.preview {
             background-color: var(--preview-color) !important;
             opacity: 0.72;
-            transition: background-color 40ms ease, box-shadow 40ms ease;
         }
 
         #board .cell.preview-valid {
@@ -107,15 +106,14 @@
         }
 
         #shapeSpace {
-            width: 100%;
             max-width: 100%;
-            height: clamp(64px, 12dvh, 140px);
+            aspect-ratio: 3/1;
             display: flex;
             flex-direction: row;
             justify-content: center;
             align-items: center;
             gap: 12px;
-            flex: none;
+            flex: 2;
             min-height: 0;
             min-width: 0;
         }
@@ -126,6 +124,11 @@
             min-width: 0;
             max-height: 100%;
             aspect-ratio: 1/1;
+        }
+
+        .shape.shape-slot-placeholder {
+            visibility: hidden;
+            pointer-events: none;
         }
 
         .shape {
@@ -190,87 +193,52 @@
             }
         }
 
-        /*Alles an Game css hier*/
-    }
+        .shape.drag-placeholder {
+            visibility: hidden;
+            pointer-events: none;
+        }
 
+        .shape.is-dragging, .shape.is-restoring {
+            position: fixed;
+            left: var(--drag-left);
+            top: var(--drag-top);
+            width: var(--drag-width);
+            height: var(--drag-height);
+            z-index: 1000;
+            pointer-events: none;
+            box-sizing: border-box;
+            will-change: left, top, width, height, padding, transform;
+        }
+
+        .shape.is-dragging {
+            padding: 0 !important;
+            transition: none;
+            transform-origin: var(--drag-anchor-x) var(--drag-anchor-y);
+            transform: scale(var(--drag-scale-x, 1), var(--drag-scale-y, 1));
+        }
+
+        .shape.is-dragging.is-scaling-up {
+            transition: transform 180ms ease;
+            transform: scale(1);
+        }
+
+        .shape.is-restoring {
+            padding: var(--drag-padding) !important;
+            transition:
+                left 360ms ease,
+                top 360ms ease,
+                width 360ms ease,
+                height 360ms ease,
+                padding 360ms ease,
+                transform 360ms ease;
+            transform: none;
+        }
+
+
+    }
 }
 
 @keyframes monsterBlastFill {
     from { transform: scale(0.35); opacity: 0.25; }
     to { transform: scale(1); opacity: 1; }
-}
-
-@media(prefers-reduced-motion: reduce) {
-    .monsterBlastContent .gameWrapper #board .cell,
-    .monsterBlastContent .gameWrapper #board .cell.loss-fill {
-        animation-duration: 1ms;
-        transition-duration: 1ms;
-    }
-}
-
-@media(width < 800px) {
-    .gameWrapper #topBar {
-        justify-content: center;
-        flex-direction: column;
-        gap: 6px;
-    }
-}
-
-@media(height < 680px) {
-    .monsterBlastContent {
-        padding-top: 4px;
-        padding-bottom: 6px;
-
-        .headline {
-            margin-bottom: 1.25rem;
-            font-size: 1.25rem;
-        }
-
-        .gameWrapper {
-            gap: 0.35rem;
-
-            #board {
-                width: min(78vw, 40dvh, 520px);
-            }
-
-            #shapeSpace {
-                height: clamp(56px, 10dvh, 90px);
-            }
-
-            #highScore #highScoreIcon {
-                height: 24px;
-            }
-
-            #score {
-                font-size: 1.5rem;
-            }
-        }
-
-    }
-}
-
-@media(height < 500px) {
-    .monsterBlastContent {
-        .headline {
-            margin-bottom: 0.75rem;
-        }
-
-        .gameWrapper {
-            gap: 0.25rem;
-
-            #board {
-                width: min(76vw, 32dvh, calc(100dvh - 220px), 520px);
-            }
-
-            #topBar {
-                width: 100%;
-                flex-direction: row;
-                gap: 1rem;
-            }
-
-            #shapeSpace {
-                height: 48px;
-            }
-        }
-    }
 }

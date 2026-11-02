@@ -17,6 +17,8 @@ export default class Game {
         this.restoreTimers = new Set()
         this.fillingTimers = new Set()
         this.activeDrag = null
+        this.previewFrame = null
+        this.previewPoint = null
         this.score = 0
         this.highScore = 0
         this.gameOver = false
@@ -56,6 +58,7 @@ export default class Game {
             this.updateScoreDisplay()
             savedState.shapes.forEach((shapeData, index) => {
                 if (shapeData) this.createShape(index, shapeData.definitionIndex, shapeData.color)
+                else this.createSlotPlaceholder(this.shapePlaceEles[index])
             })
             if (this.gameOver) {
                 this.shapePlaceEles.forEach((place) => place.classList.add("game-over"))
@@ -78,6 +81,8 @@ export default class Game {
         this.fillingTimers.forEach((timer) => window.clearTimeout(timer))
         this.restoreTimers.clear()
         this.fillingTimers.clear()
+        if (this.previewFrame !== null) window.cancelAnimationFrame(this.previewFrame)
+        this.previewFrame = null
         this.boardEle.innerHTML = ""
         this.shapePlaceEles.forEach((place) => {
             place.innerHTML = ""
@@ -148,7 +153,18 @@ export default class Game {
         })
     }
 
+    createSlotPlaceholder(place) {
+        if (place.querySelector(".shape-slot-placeholder")) return
+        const placeholder = document.createElement("div")
+        placeholder.className = "shape shape-slot-placeholder"
+        placeholder.setAttribute("aria-hidden", "true")
+        placeholder.style.gridTemplateRows = "repeat(6, 1fr)"
+        placeholder.style.gridTemplateColumns = "repeat(6, 1fr)"
+        place.appendChild(placeholder)
+    }
+
     createShape(index, definitionIndex = null, color = null) {
+        this.shapePlaceEles[index].querySelector(".shape-slot-placeholder")?.remove()
         const definition = definitionIndex === null ? null : SHAPE_DEFINITIONS[definitionIndex]
         const shape = new Shape(this.shapePlaceEles[index], this.abortSignal, definition, color)
         shape.definitionIndex = definitionIndex === null
@@ -160,23 +176,35 @@ export default class Game {
         })
     }
 
+    setDragGeometry(element, rect) {
+        element.style.setProperty("--drag-left", `${rect.left}px`)
+        element.style.setProperty("--drag-top", `${rect.top}px`)
+        element.style.setProperty("--drag-width", `${rect.width}px`)
+        element.style.setProperty("--drag-height", `${rect.height}px`)
+    }
+
     startDrag(event, index) {
         if (this.gameOver || this.isFillingBoard || this.activeDrag || event.button !== 0) return
         const shape = this.shapeInstances[index]
         if (!shape || shape.shapeEle.classList.contains("is-restoring")) return
-        const grabbedBlock = event.target.closest(".shapeBlock.active")
-        if (!grabbedBlock || !shape.shapeEle.contains(grabbedBlock)) return
         event.preventDefault()
 
         const shapeElement = shape.shapeEle
         const originalRect = shapeElement.getBoundingClientRect()
         const gridSize = shape.definition.length
-        const grabbedCell = this.getGrabbedCell(shape, grabbedBlock)
-        const grabbedBlockRect = grabbedBlock.getBoundingClientRect()
+        const grabbedCell = this.getGrabbedCell(shape, event)
         const grabCol = grabbedCell.col
         const grabRow = grabbedCell.row
-        const anchorRatioX = (grabbedBlockRect.left + grabbedBlockRect.width / 2 - originalRect.left) / originalRect.width
-        const anchorRatioY = (grabbedBlockRect.top + grabbedBlockRect.height / 2 - originalRect.top) / originalRect.height
+        const anchorRatioX = (grabCol + 0.5) / gridSize
+        const anchorRatioY = (grabRow + 0.5) / gridSize
+        const target = this.getDragMetrics()
+        if (!target) return
+        const targetSize = target.pitch * gridSize
+        const originalPadding = shapeElement.style.padding
+        const placeholder = shapeElement.cloneNode(true)
+        placeholder.className = "shape shape-slot-placeholder"
+        placeholder.setAttribute("aria-hidden", "true")
+        shapeElement.parentElement.insertBefore(placeholder, shapeElement)
         this.activeDrag = {
             index,
             shape,
@@ -190,43 +218,36 @@ export default class Game {
             pointerX: event.clientX,
             pointerY: event.clientY,
             originalRect,
+            originalPadding,
+            placeholder,
         }
 
+        this.setDragGeometry(shapeElement, originalRect)
+        shapeElement.style.setProperty("--drag-padding", originalPadding)
+        shapeElement.style.setProperty("--drag-anchor-x", `${anchorRatioX * 100}%`)
+        shapeElement.style.setProperty("--drag-anchor-y", `${anchorRatioY * 100}%`)
+        shapeElement.style.setProperty("--drag-scale-x", `${originalRect.width / targetSize}`)
+        shapeElement.style.setProperty("--drag-scale-y", `${originalRect.height / targetSize}`)
         shapeElement.classList.add("is-dragging")
-        shapeElement.style.position = "fixed"
-        shapeElement.style.left = `${originalRect.left}px`
-        shapeElement.style.top = `${originalRect.top}px`
-        shapeElement.style.width = `${originalRect.width}px`
-        shapeElement.style.height = `${originalRect.height}px`
-        shapeElement.style.zIndex = "1000"
-        shapeElement.style.pointerEvents = "none"
-        shapeElement.style.transition = "none"
         document.body.classList.add("noScroll")
 
-        const target = this.getDragMetrics()
-        if (!target) {
-            this.cancelDrag()
-            return
-        }
-        const targetSize = target.pitch * gridSize
         const targetLeft = event.clientX - anchorRatioX * targetSize
         const targetTop = event.clientY - anchorRatioY * targetSize
-        shapeElement.style.left = `${targetLeft}px`
-        shapeElement.style.top = `${targetTop}px`
-        shapeElement.style.width = `${targetSize}px`
-        shapeElement.style.height = `${targetSize}px`
-        shapeElement.style.transformOrigin = `${anchorRatioX * 100}% ${anchorRatioY * 100}%`
-        shapeElement.style.transform = `scale(${originalRect.width / targetSize}, ${originalRect.height / targetSize})`
+        this.setDragGeometry(shapeElement, {
+            left: targetLeft,
+            top: targetTop,
+            width: targetSize,
+            height: targetSize,
+        })
         this.updatePreview(event.clientX, event.clientY)
         requestAnimationFrame(() => {
             if (!this.activeDrag || this.activeDrag.shape !== shape) return
-            shapeElement.style.transition = "transform 180ms ease"
-            shapeElement.style.transform = "scale(1)"
+            shapeElement.classList.add("is-scaling-up")
             window.setTimeout(() => {
                 if (this.activeDrag?.shape !== shape) return
-                shapeElement.style.transition = "none"
-                shapeElement.style.transform = ""
-                shapeElement.style.transformOrigin = ""
+                shapeElement.style.setProperty("--drag-scale-x", "1")
+                shapeElement.style.setProperty("--drag-scale-y", "1")
+                shapeElement.classList.remove("is-scaling-up")
                 this.moveDrag(this.activeDrag.pointerX, this.activeDrag.pointerY)
             }, 190)
         })
@@ -237,12 +258,34 @@ export default class Game {
         this.moveDrag(event.clientX, event.clientY)
     }
 
-    getGrabbedCell(shape, block) {
-        const index = Array.prototype.indexOf.call(shape.shapeEle.children, block)
-        return {
-            row: Math.floor(index / shape.definition.length),
-            col: index % shape.definition.length,
+    getGrabbedCell(shape, event) {
+        const targetBlock = event.target.closest(".shapeBlock")
+        if (targetBlock && shape.shapeEle.contains(targetBlock)) {
+            const index = Array.prototype.indexOf.call(shape.shapeEle.children, targetBlock)
+            const row = Math.floor(index / shape.definition.length)
+            const col = index % shape.definition.length
+            if (shape.definition[row][col] === 1) return { row, col }
         }
+
+        let closestCell = null
+        let closestDistance = Infinity
+        Array.from(shape.shapeEle.children).forEach((block, index) => {
+            const row = Math.floor(index / shape.definition.length)
+            const col = index % shape.definition.length
+            if (shape.definition[row][col] !== 1) return
+
+            const rect = block.getBoundingClientRect()
+            const distance = Math.hypot(
+                event.clientX - (rect.left + rect.width / 2),
+                event.clientY - (rect.top + rect.height / 2),
+            )
+            if (distance < closestDistance) {
+                closestDistance = distance
+                closestCell = { row, col }
+            }
+        })
+
+        return closestCell
     }
 
     moveDrag(clientX, clientY) {
@@ -258,14 +301,29 @@ export default class Game {
         const size = metrics.pitch * gridSize
         const left = clientX - drag.anchorRatioX * size
         const top = clientY - drag.anchorRatioY * size
-        drag.shapeElement.style.left = `${left}px`
-        drag.shapeElement.style.top = `${top}px`
-        drag.shapeElement.style.width = `${size}px`
-        drag.shapeElement.style.height = `${size}px`
+        this.setDragGeometry(drag.shapeElement, { left, top, width: size, height: size })
         this.updatePreview(clientX, clientY)
     }
 
-    updatePreview(clientX, clientY) {
+    updatePreview(clientX, clientY, immediate = false) {
+        this.previewPoint = { x: clientX, y: clientY }
+        if (immediate) {
+            if (this.previewFrame !== null) window.cancelAnimationFrame(this.previewFrame)
+            this.previewFrame = null
+            this.renderPreview(clientX, clientY)
+            return
+        }
+        if (this.previewFrame !== null) return
+
+        this.previewFrame = window.requestAnimationFrame(() => {
+            this.previewFrame = null
+            if (this.activeDrag && this.previewPoint) {
+                this.renderPreview(this.previewPoint.x, this.previewPoint.y)
+            }
+        })
+    }
+
+    renderPreview(clientX, clientY) {
         this.clearPreview()
         const drag = this.activeDrag
         if (drag) drag.placement = null
@@ -351,6 +409,7 @@ export default class Game {
     handlePointerUp = (event) => {
         if (!this.activeDrag || event.pointerId !== this.activeDrag.pointerId) return
         this.moveDrag(event.clientX, event.clientY)
+        this.updatePreview(event.clientX, event.clientY, true)
         const drag = this.activeDrag
         if (drag.placement) {
             this.placeShape(drag)
@@ -371,6 +430,8 @@ export default class Game {
     handleResize = () => this.cancelDrag()
 
     clearPreview() {
+        if (this.previewFrame !== null) window.cancelAnimationFrame(this.previewFrame)
+        this.previewFrame = null
         this.boardEle.querySelectorAll(".preview").forEach((cell) => {
             cell.classList.remove("preview", "preview-valid")
             cell.style.removeProperty("--preview-color")
@@ -438,22 +499,9 @@ export default class Game {
     hasAnyValidMove() {
         for (const shape of this.shapeInstances) {
             if (!shape) continue
-            for (let rowOffset = 0; rowOffset < BOARD_SIZE; rowOffset++) {
-                for (let colOffset = 0; colOffset < BOARD_SIZE; colOffset++) {
-                    let fits = true
-                    for (let row = 0; row < shape.definition.length && fits; row++) {
-                        for (let col = 0; col < shape.definition[row].length; col++) {
-                            if (shape.definition[row][col] !== 1) continue
-                            const boardRow = rowOffset + row
-                            const boardCol = colOffset + col
-                            if (boardRow >= BOARD_SIZE || boardCol >= BOARD_SIZE
-                                || this.boardMatrix[boardRow][boardCol] !== null) {
-                                fits = false
-                                break
-                            }
-                        }
-                    }
-                    if (fits) return true
+            for (let rowOffset = 1 - shape.definition.length; rowOffset < BOARD_SIZE; rowOffset++) {
+                for (let colOffset = 1 - shape.definition[0].length; colOffset < BOARD_SIZE; colOffset++) {
+                    if (this.getPlacement(shape.definition, rowOffset, colOffset)) return true
                 }
             }
         }
@@ -523,42 +571,44 @@ export default class Game {
         this.clearPreview()
         this.activeDrag = null
         document.body.classList.remove("noScroll")
-        if (animate) this.restoreShape(drag)
-        else this.resetDragElement(drag.shapeElement)
+        if (animate) {
+            this.restoreShape(drag)
+        } else {
+            drag.placeholder.remove()
+            this.resetDragElement(drag.shapeElement)
+        }
     }
 
     restoreShape(drag) {
         const element = drag.shapeElement
         const originRect = drag.origin.getBoundingClientRect()
-        element.classList.remove("is-dragging")
+        element.classList.remove("is-dragging", "is-scaling-up")
         element.classList.add("is-restoring")
-        element.style.pointerEvents = "none"
-        element.style.transition = `left ${RESTORE_DURATION}ms ease, top ${RESTORE_DURATION}ms ease, width ${RESTORE_DURATION}ms ease, height ${RESTORE_DURATION}ms ease, transform ${RESTORE_DURATION}ms ease`
-        element.style.left = `${originRect.left}px`
-        element.style.top = `${originRect.top}px`
-        element.style.width = `${originRect.width}px`
-        element.style.height = `${originRect.height}px`
-        element.style.transform = "none"
+        element.style.setProperty("--drag-padding", drag.originalPadding)
+        this.setDragGeometry(element, originRect)
         const timer = window.setTimeout(() => {
             this.restoreTimers.delete(timer)
             this.resetDragElement(element)
             element.classList.remove("is-restoring")
+            drag.placeholder.remove()
         }, RESTORE_DURATION)
         this.restoreTimers.add(timer)
     }
 
     resetDragElement(element) {
-        element.classList.remove("is-dragging")
-        element.style.position = ""
-        element.style.left = ""
-        element.style.top = ""
-        element.style.width = ""
-        element.style.height = ""
-        element.style.zIndex = ""
-        element.style.pointerEvents = ""
-        element.style.transition = ""
-        element.style.transform = ""
-        element.style.transformOrigin = ""
+        element.classList.remove("is-dragging", "is-scaling-up", "is-restoring")
+        const dragProperties = [
+            "--drag-left",
+            "--drag-top",
+            "--drag-width",
+            "--drag-height",
+            "--drag-padding",
+            "--drag-anchor-x",
+            "--drag-anchor-y",
+            "--drag-scale-x",
+            "--drag-scale-y",
+        ]
+        dragProperties.forEach((property) => element.style.removeProperty(property))
     }
 
     updateHighScore() {
