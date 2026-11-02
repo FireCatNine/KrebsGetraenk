@@ -13,11 +13,13 @@ export default function Header() {
 
     const toggleNavbar = () => setNavbarOpen(!navbarOpen)
 
+    const imageSrc = `${import.meta.env.BASE_URL}favicon.svg`
+
     return(
         <>
           <header className={styles.header}>
             <div className={styles.logo}>
-              <Link to='/'><img src="/favicon.svg" alt="Logo" /></Link>
+              <Link to='/'><img src={imageSrc} /></Link>
             </div>
             <div className={styles.headline}>
               <h1>MONSTER WALL</h1>
@@ -47,6 +49,10 @@ export default function Header() {
             <div className={styles.navEle}>
               <span className={styles.navCurrent}></span>
               <NavLink to='/monsterblast/' className={({isActive}) => isActive ? clsx(styles.navLink, styles.active) : styles.navLink} onClick={toggleNavbar}>Monster Blast</NavLink>
+            </div>
+            <div className={styles.navEle}>
+              <span className={styles.navCurrent}></span>
+              <NavLink to='/karl/' className={({isActive}) => isActive ? clsx(styles.navLink, styles.active) : styles.navLink} onClick={toggleNavbar}>Karl</NavLink>
             </div>
           </nav>
           <div className={clsx(styles.navBackground, navbarOpen ? styles.active : '')} onClick={toggleNavbar}></div>

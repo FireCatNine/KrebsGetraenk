@@ -1,17 +1,29 @@
 .monsterBlastContent {
-    box-sizing: border-box;
     padding: 20px 16px 20px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    min-height: var(--content-height);
+    height: calc(var(--content-height) - 40px);
 
     .headline {
       margin-bottom: 1rem;
       color: var(--foreground);
       flex-shrink: 0;
       text-align: center;
+    }
+
+    .info {
+        font-size: 0.8rem;
+        color: var(--foreground);
+        flex-shrink: 0;
+    }
+
+    .infoLink {
+        font-size: 0.8rem;
+        color: var(--accent);
+        text-decoration: none;
+        flex-shrink: 0;
     }
 
     .gameWrapper {
