@@ -231,7 +231,7 @@
             aspect-ratio: 2/3;
             height: 35px;
             background: var(--accent);
-            mask: url("../assets/monster_blast/monster-logo.svg") center / contain no-repeat;
+            mask: url("../assets/monster-logo.svg") center / contain no-repeat;
         }
 
         #highScore #highScoreVal {
